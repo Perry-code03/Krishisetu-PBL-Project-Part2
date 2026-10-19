@@ -32,3 +32,5 @@ dist/
 build/
 node_modules/
 *.class
+__pycache__/
+*.py[cod]

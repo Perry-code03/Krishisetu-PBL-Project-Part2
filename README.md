@@ -4,7 +4,7 @@
 > **Theme:** Farmer Welfare, Digital Inclusion & Grounded AI Guidance  
 > **Tech Stack:** Spring Boot 3.3.4, Java 17+, MySQL 8.0, Spring Security (JWT + BCrypt), Vanilla HTML5/CSS3/JavaScript  
 > **Live Demo (Static Frontend):** [krishi-setu-pbl-project.vercel.app](https://krishi-setu-pbl-project.vercel.app/)  
-> **Repository:** [github.com/Perry-code03/KrishiSetu-PBL-Project](https://github.com/Perry-code03/KrishiSetu-PBL-Project)
+> **Repository:** [github.com/Perry-code03/Krishisetu-PBL-Project-Part2](https://github.com/Perry-code03/Krishisetu-PBL-Project-Part2)
 
 ---
 
