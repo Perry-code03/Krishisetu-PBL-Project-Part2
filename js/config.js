@@ -2,8 +2,8 @@
  * KrishiSetu - Global Application Configuration
  */
 const KrishiConfig = {
-  // Default Spring Boot REST API endpoint
-  apiBaseUrl: window.KRISHI_API_URL || 'http://localhost:8080/api',
+  // REST API endpoint (auto-detects current host/port, fallback to localhost:8080/api)
+  apiBaseUrl: window.KRISHI_API_URL || (typeof window !== 'undefined' && window.location.origin && window.location.origin.startsWith('http') ? window.location.origin + '/api' : 'http://localhost:8080/api'),
 
   // Fallback mode when Spring Boot is offline (e.g. static host on Vercel)
   enableLocalFallback: true,

@@ -369,10 +369,17 @@ class KrishiAIAssistant {
       });
     }
 
+    const aiElig = (isHi && topMatch.eligibilityHi) ? topMatch.eligibilityHi : topMatch.eligibility;
+    const aiBen = (isHi && topMatch.benefitsHi) ? topMatch.benefitsHi : topMatch.benefits;
+    const aiProc = (isHi && topMatch.procedureHi) ? topMatch.procedureHi : topMatch.procedure;
+    const aiDocs = (isHi && topMatch.documentsHi) ? topMatch.documentsHi : topMatch.documents;
+    const aiSubsidy = isHi ? (topMatch.subsidyHighlightHi || topMatch.subsidyHighlight) : topMatch.subsidyHighlight;
+    const aiTarget = isHi ? (topMatch.targetBeneficiaryHi || topMatch.targetBeneficiary) : topMatch.targetBeneficiary;
+
     if (intent === 'documents') {
       responseText = isHi
         ? `📋 **${topMatch.nameHi} (${topMatch.code})** के लिए आवश्यक दस्तावेज़:\n\n` +
-          topMatch.documents.map(d => `• ${d}`).join('\n') +
+          aiDocs.map(d => `• ${d}`).join('\n') +
           `\n\n💡 *सलाह: आप चेकलिस्ट प्रिंट करके सीएससी केंद्र ले जा सकते हैं।*`
         : `📋 **Required Documents for ${topMatch.name} (${topMatch.code}):**\n\n` +
           topMatch.documents.map(d => `• ${d}`).join('\n') +
@@ -380,14 +387,14 @@ class KrishiAIAssistant {
     } else if (intent === 'how_to_apply') {
       responseText = isHi
         ? `🚀 **${topMatch.nameHi} (${topMatch.code}) - आवेदन प्रक्रिया:**\n\n` +
-          topMatch.procedure.map(p => `**चरण ${p.step}: ${p.title}**\n${p.desc}`).join('\n\n')
+          aiProc.map(p => `**चरण ${p.step}: ${p.title}**\n${p.desc}`).join('\n\n')
         : `🚀 **How to Apply for ${topMatch.name} (${topMatch.code}):**\n\n` +
           topMatch.procedure.map(p => `**Step ${p.step}: ${p.title}**\n${p.desc}`).join('\n\n');
     } else if (intent === 'eligibility') {
       responseText = isHi
-        ? `🎯 **${topMatch.nameHi} (${topMatch.code}) - पात्रता मानदंड:**\n\n` +
-          topMatch.eligibility.map(e => `• ${e}`).join('\n') +
-          `\n\n**लक्षित लाभार्थी:** ${topMatch.targetBeneficiary}\n` +
+        ? `🎯 **${topMatch.nameHi} (${topMatch.code}) - पात्रता आवश्यकताएं (Requirements):**\n\n` +
+          aiElig.map(e => `• ${e}`).join('\n') +
+          `\n\n**लक्षित लाभार्थी:** ${aiTarget}\n` +
           `**भूमि सीमा:** ${topMatch.minLand} से ${topMatch.maxLand >= 999 ? 'कोई ऊपरी सीमा नहीं' : topMatch.maxLand + ' हेक्टेयर'}`
         : `🎯 **Eligibility Criteria for ${topMatch.name} (${topMatch.code}):**\n\n` +
           topMatch.eligibility.map(e => `• ${e}`).join('\n') +
@@ -396,8 +403,8 @@ class KrishiAIAssistant {
     } else if (intent === 'benefits') {
       responseText = isHi
         ? `💰 **${topMatch.nameHi} (${topMatch.code}) - वित्तीय लाभ एवं सब्सिडी:**\n\n` +
-          `**मुख्य लाभ:** ${topMatch.subsidyHighlight}\n\n` +
-          topMatch.benefits.map(b => `• ${b}`).join('\n')
+          `**मुख्य लाभ:** ${aiSubsidy}\n\n` +
+          aiBen.map(b => `• ${b}`).join('\n')
         : `💰 **Financial Benefits & Subsidy for ${topMatch.name} (${topMatch.code}):**\n\n` +
           `**Key Subsidy:** ${topMatch.subsidyHighlight}\n\n` +
           topMatch.benefits.map(b => `• ${b}`).join('\n');
@@ -406,10 +413,10 @@ class KrishiAIAssistant {
       responseText = isHi
         ? `🌾 **${topMatch.nameHi} (${topMatch.code})**\n` +
           `🏛️ **जारीकर्ता:** ${topMatch.issuingBodyHi}\n` +
-          `💰 **मुख्य सब्सिडी / लाभ:** ${topMatch.subsidyHighlight}\n` +
+          `💰 **मुख्य सब्सिडी / लाभ:** ${aiSubsidy}\n` +
           `📝 **विवरण:** ${topMatch.taglineHi}\n\n` +
-          `🎯 **मुख्य पात्रता:**\n` + topMatch.eligibility.slice(0, 2).map(e => `• ${e}`).join('\n') + `\n\n` +
-          `📋 **दस्तावेज़:** ${topMatch.documents.slice(0, 3).join(', ')} आदि।`
+          `🎯 **मुख्य पात्रता आवश्यकताएं:**\n` + aiElig.slice(0, 2).map(e => `• ${e}`).join('\n') + `\n\n` +
+          `📋 **दस्तावेज़:** ${aiDocs.slice(0, 3).join(', ')} आदि।`
         : `🌾 **${topMatch.name} (${topMatch.code})**\n` +
           `🏛️ **Issuing Authority:** ${topMatch.issuingBody}\n` +
           `💰 **Key Subsidy:** ${topMatch.subsidyHighlight}\n` +

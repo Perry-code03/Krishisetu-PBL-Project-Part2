@@ -16,10 +16,10 @@
        ========================================================================== -->
   <header class="top-bar">
     <div class="top-bar-left">
-      <span>National Agricultural Welfare Information & Application Guidance Platform</span>
+      <span data-i18n="topBarTitle">National Agricultural Welfare Information & Application Guidance Platform</span>
     </div>
     <div class="top-bar-right">
-      <span>🛡️ Verified Data · Updated September 2026</span>
+      <span data-i18n="topBarVerified">🛡️ Verified Data · Updated September 2026</span>
       <button class="lang-toggle-btn" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language / भाषा बदलें">
         <span>🌐 English</span>
         <span class="lang-active-tag">EN</span>
@@ -48,14 +48,14 @@
 
     <div class="nav-actions">
       <a href="dashboard.html" class="btn-outline" title="View Saved Schemes">
-        <span>❤️ Saved</span>
+        <span data-i18n="navSaved">❤️ Saved</span>
         <span class="saved-count-badge" id="savedCountBadge">3</span>
       </a>
       <a href="eligibility.html" class="btn-primary">
-        <span>Check Eligibility</span>
+        <span data-i18n="navCheckEligibility">Check Eligibility</span>
       </a>
       <a href="login.html" class="btn-outline auth-login-btn" id="navLoginBtn">
-        <span>👤 Login</span>
+        <span data-i18n="navLogin">👤 Login</span>
       </a>
       <div class="auth-profile-chip" id="navProfileChip" style="display: none;">
         <button class="profile-chip-btn" id="profileChipBtn" title="Farmer Profile">
@@ -64,8 +64,8 @@
           <span class="chip-arrow">▾</span>
         </button>
         <div class="profile-dropdown" id="profileDropdown">
-          <a href="dashboard.html" class="dropdown-item">📊 My Dashboard</a>
-          <a href="#" class="dropdown-item" id="logoutBtn">🚪 Logout</a>
+          <a href="dashboard.html" class="dropdown-item" data-i18n="navMyDashboard">📊 My Dashboard</a>
+          <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="navLogout">🚪 Logout</a>
         </div>
       </div>
     </div>
@@ -125,8 +125,8 @@
         <div class="side-nav-help-card">
           <span style="font-size: 1.25rem;">🤖</span>
           <div>
-            <div style="font-weight: 600; color: var(--color-primary); font-size: 0.8125rem;">Krishi Mitra AI</div>
-            <div style="font-size: 0.72rem; color: var(--color-ink-faint);">24/7 Scheme Assistant</div>
+            <div style="font-weight: 600; color: var(--color-primary); font-size: 0.8125rem;" data-i18n="aiAssistantTitle">Krishi Mitra AI</div>
+            <div style="font-size: 0.72rem; color: var(--color-ink-faint);" data-i18n="aiAssistantSubtitle">24/7 Scheme Assistant</div>
           </div>
         </div>
       </div>
@@ -141,14 +141,12 @@
       <!-- Page Header Banner -->
       <section class="page-header-banner">
         <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-          <a href="index.html">Home</a>
+          <a href="index.html" data-i18n="breadcrumbHome">Home</a>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">Eligibility Checker</span>
+          <span class="breadcrumb-current" data-i18n="breadcrumbEligibility">Eligibility Checker</span>
         </nav>
         <h1 class="page-title">Rules-Based Scheme Eligibility Engine</h1>
-        <p class="page-desc">
-          Complete this simple 4-step assessment to receive ranked scheme recommendations with transparent "Why you match" explanations based on your state, land holding, crops, and social category.
-        </p>
+        <p class="page-desc" data-i18n="eligibilityPageDesc">Complete this simple 4-step assessment to receive ranked scheme recommendations with transparent "Why you match" explanations based on your state, land holding, crops, and social category.</p>
       </section>
 
       <!-- Eligibility Wizard Section -->
@@ -163,31 +161,31 @@
 
             <div class="wizard-step-node active" id="nodeStep1" onclick="setWizardStep(1)">
               <div class="node-circle">1</div>
-              <span class="node-label">Location &amp; Land</span>
+              <span class="node-label" data-i18n="stepNode1">Location &amp; Land</span>
             </div>
 
             <div class="wizard-step-node" id="nodeStep2" onclick="setWizardStep(2)">
               <div class="node-circle">2</div>
-              <span class="node-label">Crops &amp; Farming</span>
+              <span class="node-label" data-i18n="stepNode2">Crops &amp; Farming</span>
             </div>
 
             <div class="wizard-step-node" id="nodeStep3" onclick="setWizardStep(3)">
               <div class="node-circle">3</div>
-              <span class="node-label">Farmer Category</span>
+              <span class="node-label" data-i18n="stepNode3">Farmer Category</span>
             </div>
 
             <div class="wizard-step-node" id="nodeStep4">
               <div class="node-circle">4</div>
-              <span class="node-label">Results</span>
+              <span class="node-label" data-i18n="stepNode4">Results</span>
             </div>
           </div>
 
           <!-- Step 1: Location & Land -->
           <div class="wizard-step-content active" id="wizardStep1">
-            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;">Step 1: Location &amp; Landholding Size</h3>
+            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;" data-i18n="wizStep1Heading">Step 1: Location &amp; Landholding Size</h3>
             <div class="form-grid-2">
               <div>
-                <label class="form-label">State / Union Territory</label>
+                <label class="form-label" data-i18n="wizStateLabel">State / Union Territory</label>
                 <select class="form-select" id="wizState">
                   <option value="Madhya Pradesh" selected>Madhya Pradesh</option>
                   <option value="Uttar Pradesh">Uttar Pradesh</option>
@@ -202,23 +200,23 @@
                 </select>
               </div>
               <div>
-                <label class="form-label">Total Cultivable Land (in Hectares)</label>
+                <label class="form-label" data-i18n="wizLandLabel">Total Cultivable Land (in Hectares)</label>
                 <input type="number" class="form-input" id="wizLand" value="1.5" min="0" step="0.1" placeholder="e.g. 1.5">
-                <span style="font-size: 0.75rem; color: var(--color-ink-faint);">Note: 1 Hectare ≈ 2.47 Acres</span>
+                <span style="font-size: 0.75rem; color: var(--color-ink-faint);" data-i18n="wizLandNote">Note: 1 Hectare ≈ 2.47 Acres</span>
               </div>
             </div>
             <div class="wizard-nav-buttons">
               <span></span>
-              <button class="btn-primary" onclick="nextWizardStep()">Next: Farming Type →</button>
+              <button class="btn-primary" onclick="nextWizardStep()" data-i18n="wizStep1Next">Next: Farming Type →</button>
             </div>
           </div>
 
           <!-- Step 2: Crops & Farming Type -->
           <div class="wizard-step-content" id="wizardStep2">
-            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;">Step 2: Crops &amp; Agriculture Practice</h3>
+            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;" data-i18n="wizStep2Heading">Step 2: Crops &amp; Agriculture Practice</h3>
             <div class="form-grid-2">
               <div>
-                <label class="form-label">Primary Crop Category</label>
+                <label class="form-label" data-i18n="wizCropLabel">Primary Crop Category</label>
                 <select class="form-select" id="wizCrop">
                   <option value="grains" selected>Foodgrains &amp; Cereals (Wheat, Rice, Maize)</option>
                   <option value="pulses_oilseeds">Pulses &amp; Oilseeds (Gram, Soybean, Mustard)</option>
@@ -228,7 +226,7 @@
                 </select>
               </div>
               <div>
-                <label class="form-label">Existing Water / Irrigation Source</label>
+                <label class="form-label" data-i18n="wizIrrigationLabel">Existing Water / Irrigation Source</label>
                 <select class="form-select" id="wizIrrigation">
                   <option value="borewell">Borewell / Tube Well (Grid Connected)</option>
                   <option value="diesel">Diesel Pump (Off-Grid)</option>
@@ -238,17 +236,17 @@
               </div>
             </div>
             <div class="wizard-nav-buttons">
-              <button class="btn-outline" onclick="prevWizardStep()">← Previous</button>
-              <button class="btn-primary" onclick="nextWizardStep()">Next: Category &amp; Income →</button>
+              <button class="btn-outline" onclick="prevWizardStep()" data-i18n="wizPrevBtn">← Previous</button>
+              <button class="btn-primary" onclick="nextWizardStep()" data-i18n="wizStep2Next">Next: Category &amp; Income →</button>
             </div>
           </div>
 
           <!-- Step 3: Farmer Category & Income -->
           <div class="wizard-step-content" id="wizardStep3">
-            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;">Step 3: Social Category &amp; Income Band</h3>
+            <h3 style="font-family: var(--font-serif); color: var(--color-primary); margin-bottom: 18px;" data-i18n="wizStep3Heading">Step 3: Social Category &amp; Income Band</h3>
             <div class="form-grid-2">
               <div>
-                <label class="form-label">Farmer Scale / Land Classification</label>
+                <label class="form-label" data-i18n="wizScaleLabel">Farmer Scale / Land Classification</label>
                 <select class="form-select" id="wizCategory">
                   <option value="marginal">Marginal Farmer (up to 1 Hectare)</option>
                   <option value="small" selected>Small Farmer (1 to 2 Hectares)</option>
@@ -257,7 +255,7 @@
                 </select>
               </div>
               <div>
-                <label class="form-label">Annual Household Income</label>
+                <label class="form-label" data-i18n="wizIncomeLabel">Annual Household Income</label>
                 <select class="form-select" id="wizIncome">
                   <option value="below_1lakh">Below ₹1,00,000</option>
                   <option value="below_2lakh" selected>₹1,00,000 to ₹2,50,000</option>
@@ -268,7 +266,7 @@
             </div>
             <div class="form-grid-2">
               <div>
-                <label class="form-label">Special Eligibility Group</label>
+                <label class="form-label" data-i18n="wizSpecialLabel">Special Eligibility Group</label>
                 <select class="form-select" id="wizSpecial">
                   <option value="none">General Category</option>
                   <option value="woman">Woman Farmer / SHG Member</option>
@@ -277,7 +275,7 @@
                 </select>
               </div>
               <div>
-                <label class="form-label">Existing Central Enrollments</label>
+                <label class="form-label" data-i18n="wizEnrollmentLabel">Existing Central Enrollments</label>
                 <select class="form-select" id="wizExisting">
                   <option value="pmkisan_yes">Already enrolled in PM-KISAN</option>
                   <option value="pmkisan_no">Not enrolled in PM-KISAN</option>
@@ -286,7 +284,7 @@
             </div>
             <div class="wizard-nav-buttons">
               <button class="btn-outline" onclick="prevWizardStep()">← Previous</button>
-              <button class="btn-primary btn-accent" onclick="nextWizardStep()">Calculate Matches Now →</button>
+              <button class="btn-primary btn-accent" onclick="nextWizardStep()" data-i18n="wizCalcBtn">Calculate Matches Now →</button>
             </div>
           </div>
 
@@ -296,8 +294,8 @@
               <!-- Populated by js/app.js calculateEligibilityResults() -->
             </div>
             <div class="wizard-nav-buttons" style="margin-top: 20px;">
-              <button class="btn-outline" onclick="setWizardStep(1)">↻ Re-run Eligibility Check</button>
-              <a href="dashboard.html" class="btn-primary">View in My Dashboard →</a>
+              <button class="btn-outline" onclick="setWizardStep(1)" data-i18n="wizRerunBtn">↻ Re-run Eligibility Check</button>
+              <a href="dashboard.html" class="btn-primary" data-i18n="wizViewDashboardBtn">View in My Dashboard →</a>
             </div>
           </div>
 
@@ -309,14 +307,12 @@
         <div class="footer-container">
           <div class="footer-brand">
             <h2>KrishiSetu (कृषि सेतु)</h2>
-            <p>A centralized digital bridge helping Indian farmers navigate agricultural welfare schemes with clarity, step-by-step guidance, and grounded AI assistance.</p>
-            <p style="margin-top: 14px; font-size: 0.775rem; color: #8EAE9D;">
-              Academic PBL Engineering Project · Designed &amp; Developed for Indian Farmers.
-            </p>
+            <p data-i18n="footerBrandDesc">A centralized digital bridge helping Indian farmers navigate agricultural welfare schemes with clarity, step-by-step guidance, and grounded AI assistance.</p>
+            <p style="margin-top: 14px; font-size: 0.775rem; color: #8EAE9D;" data-i18n="footerProject">Academic PBL Engineering Project · Designed &amp; Developed for Indian Farmers.</p>
           </div>
 
           <div class="footer-col">
-            <h4>Key Portals</h4>
+            <h4 data-i18n="footerPortals">Key Portals</h4>
             <ul class="footer-links">
               <li><a href="https://pmkisan.gov.in" target="_blank" rel="noopener">PM-KISAN Portal</a></li>
               <li><a href="https://pmfby.gov.in" target="_blank" rel="noopener">PMFBY Crop Insurance</a></li>
@@ -326,7 +322,7 @@
           </div>
 
           <div class="footer-col">
-            <h4>Platform Pages</h4>
+            <h4 data-i18n="footerPages">Platform Pages</h4>
             <ul class="footer-links">
               <li><a href="schemes.html">Explore 36+ Schemes</a></li>
               <li><a href="eligibility.html">Eligibility Checker</a></li>
@@ -337,7 +333,7 @@
           </div>
 
           <div class="footer-col">
-            <h4>Official Sources</h4>
+            <h4 data-i18n="footerSources">Official Sources</h4>
             <ul class="footer-links">
               <li><a href="https://agriwelfare.gov.in" target="_blank" rel="noopener">Ministry of Agriculture</a></li>
               <li><a href="https://pib.gov.in" target="_blank" rel="noopener">Press Information Bureau</a></li>
@@ -349,10 +345,10 @@
 
         <div class="footer-bottom">
           <div>
-            © 2026 KrishiSetu Platform. All scheme data verified against official PIB and Ministry of Agriculture releases.
+            <span data-i18n="footerCopyright">© 2026 KrishiSetu Platform. All scheme data verified against official PIB and Ministry of Agriculture releases.</span>
           </div>
           <div>
-            Direct Hand-Off to Official Portals · Zero Middlemen · Accessible in English &amp; हिन्दी
+            <span data-i18n="footerTagline">Direct Hand-Off to Official Portals · Zero Middlemen · Accessible in English &amp; हिन्दी</span>
           </div>
         </div>
       </footer>
@@ -382,38 +378,42 @@
             Tagline description
           </p>
           <div class="subsidy-box" style="margin-bottom: 0;">
-            <div class="subsidy-label">Key Subsidy / Financial Benefit</div>
+            <div class="subsidy-label" data-i18n="modalSubsidyLabel">Key Subsidy / Financial Benefit</div>
             <div class="subsidy-value" style="font-size: 1.15rem;" id="modalSubsidyHighlight">₹6,000 / year</div>
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
           <div>
-            <h4 class="detail-section-title">✨ Key Benefits</h4>
+            <h4 class="detail-section-title" data-i18n="modalBenefitsTitle">✨ Key Benefits</h4>
             <ul id="modalBenefitsList" style="list-style: none; padding: 0;"></ul>
           </div>
           <div>
-            <h4 class="detail-section-title">🎯 Who is Eligible?</h4>
+            <h4 class="detail-section-title" data-i18n="modalEligTitle">🎯 Who is Eligible?</h4>
             <ul id="modalEligibilityList" style="list-style: none; padding: 0;"></ul>
             <div style="margin-top: 8px; font-size: 0.8125rem; color: var(--color-secondary);">
-              <strong>Target Group:</strong> <span id="modalTargetBeneficiary"></span>
+              <strong data-i18n="modalTargetGroup">Target Group:</strong> <span id="modalTargetBeneficiary"></span>
             </div>
           </div>
         </div>
 
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <h4 class="detail-section-title" style="margin-bottom: 0; border: none;">📋 Required Documents Checklist</h4>
-            <button class="btn-outline" id="modalPrintChecklistBtn" style="font-size: 0.775rem; padding: 5px 12px;">
-              🖨️ Print / Download Checklist
-            </button>
+            <h4 class="detail-section-title" style="margin-bottom: 0; border: none;" data-i18n="modalDocsTitle">📋 Required Documents Checklist</h4>
+            <button class="btn-outline" id="modalPrintChecklistBtn" style="font-size: 0.775rem; padding: 5px 12px;" data-i18n="modalPrintBtn">🖨️ Print / Download Checklist</button>
           </div>
           <div class="documents-checklist" id="modalDocumentsList"></div>
         </div>
 
         <div>
-          <h4 class="detail-section-title">🚀 Step-by-Step Application Procedure (How to Apply)</h4>
+          <h4 class="detail-section-title" data-i18n="modalProcedureTitle">🚀 Step-by-Step Application Procedure (How to Apply)</h4>
           <div class="procedure-timeline" id="modalProcedureTimeline"></div>
+        </div>
+
+        <!-- Official Proof Documents & Guidelines -->
+        <div id="modalOfficialDocsSection" style="display: none;">
+          <h4 class="detail-section-title" data-i18n="modalOfficialDocsTitle">📄 Official Documents & Proof Guidelines</h4>
+          <div class="official-docs-grid" id="modalOfficialDocsList"></div>
         </div>
 
         <div class="modal-actions-bar">
@@ -421,21 +421,14 @@
             <span style="font-size: 0.775rem; color: var(--color-ink-faint);" id="modalLastVerified">
               Verified: September 2026
             </span>
-            <button class="tts-btn" id="modalTtsBtn">
-              🔊 <span>Read Scheme Aloud</span>
-            </button>
-            <button class="btn-outline" id="modalSaveBtn" style="font-size: 0.8125rem; padding: 7px 14px;">
-              🤍 Save Scheme
-            </button>
+            <button class="tts-btn" id="modalTtsBtn">🔊 <span data-i18n="readAloud">Read Scheme Aloud</span></button>
+            <button class="btn-outline" id="modalSaveBtn" style="font-size: 0.8125rem; padding: 7px 14px;" data-i18n="modalSaveBtn">🤍 Save Scheme</button>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <button class="btn-outline" id="modalAskAiBtn" style="font-size: 0.8125rem; padding: 8px 14px;">
-              🤖 Ask AI Assistant
-            </button>
-            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary" id="modalOfficialLink">
-              Apply on Official Portal ↗
-            </a>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-outline" id="modalProofDocLink" style="font-size: 0.8125rem; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; border-color: var(--color-primary); color: var(--color-primary); font-weight: 600;">📄 <span data-i18n="modalProofDocBtn">Proof Guidelines ↗</span></a>
+            <button class="btn-outline" id="modalAskAiBtn" style="font-size: 0.8125rem; padding: 8px 14px;" data-i18n="modalAskAiBtn">🤖 Ask AI Assistant</button>
+            <a href="https://agriwelfare.gov.in" target="_blank" rel="noopener noreferrer" class="btn-primary" id="modalOfficialLink" data-i18n="applyOfficial">Apply on Official Portal ↗</a>
           </div>
         </div>
 
@@ -446,11 +439,11 @@
   <!-- Compare Schemes Drawer -->
   <div class="compare-sticky-bar" id="compareStickyBar">
     <div style="font-size: 0.875rem; font-weight: 600;">
-      Compare Schemes (<span id="compareCountLabel">Selected</span>):
+      <span data-i18n="compareBarLabel">Compare Schemes</span> (<span id="compareCountLabel">Selected</span>):
     </div>
     <div class="compare-bar-schemes" id="comparePillsContainer"></div>
     <a href="compare.html" class="btn-primary btn-accent" style="padding: 7px 16px; font-size: 0.8125rem;">
-      Compare Side-by-Side →
+      <span data-i18n="compareBarBtn">Compare Side-by-Side →</span>
     </a>
   </div>
 
@@ -467,7 +460,7 @@
           <div class="ai-avatar">KM</div>
           <div class="ai-header-text">
             <h4>Krishi Mitra AI</h4>
-            <span>● 100% Grounded in Scheme DB</span>
+            <span data-i18n="aiGroundedBadge">● 100% Grounded in Scheme DB</span>
           </div>
         </div>
         <button class="ai-header-close" id="aiCloseBtn" title="Minimize Chat">✕</button>
@@ -477,15 +470,15 @@
 
       <div style="padding: 8px 14px; background: #FAF8F2; border-top: 1px solid var(--color-surface-border);">
         <div class="ai-quick-chips">
-          <button class="ai-chip" data-query="PM-KISAN eligibility and documents">PM-KISAN Documents?</button>
-          <button class="ai-chip" data-query="KCC loan interest rate">KCC 4% Interest?</button>
-          <button class="ai-chip" data-query="Solar pump subsidy in PM-KUSUM">Solar Pump Subsidy?</button>
-          <button class="ai-chip" data-query="Check my saved schemes progress">My Saved Schemes</button>
+          <button class="ai-chip" data-query="PM-KISAN eligibility and documents" data-i18n="aiChipPmkisan">PM-KISAN Documents?</button>
+          <button class="ai-chip" data-query="KCC loan interest rate" data-i18n="aiChipKcc">KCC 4% Interest?</button>
+          <button class="ai-chip" data-query="Solar pump subsidy in PM-KUSUM" data-i18n="aiChipSolar">Solar Pump Subsidy?</button>
+          <button class="ai-chip" data-query="Check my saved schemes progress" data-i18n="aiChipSaved">My Saved Schemes</button>
         </div>
       </div>
 
       <div class="ai-input-bar">
-        <input type="text" class="ai-input" id="aiInputField" placeholder="Ask about any scheme, documents, steps..." autocomplete="off">
+        <input type="text" class="ai-input" id="aiInputField" placeholder="Ask about any scheme, documents, steps..." autocomplete="off" data-i18n-placeholder="aiPlaceholder">
         <button class="ai-send-btn" id="aiSendBtn" title="Send message">➤</button>
       </div>
     </div>

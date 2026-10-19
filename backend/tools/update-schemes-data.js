@@ -547,11 +547,11 @@ if (!existingPranam) {
 SCHEMES_DATA.forEach(scheme => {
   const meta = enrichment[scheme.id];
   if (meta) {
-    scheme.applyUrl = meta.applyUrl;
+    scheme.applyUrl = scheme.officialUrl || meta.applyUrl;
     scheme.officialDocuments = meta.officialDocuments;
     scheme.keywords = meta.keywords;
   } else if (!scheme.officialDocuments) {
-    scheme.applyUrl = scheme.applyUrl || null;
+    scheme.applyUrl = scheme.officialUrl || scheme.applyUrl;
     scheme.officialDocuments = [
       {
         title: `${scheme.name} Official Overview`,

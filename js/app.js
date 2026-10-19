@@ -5,6 +5,17 @@
  * text-to-speech, printable document checklists, and bilingual engine.
  */
 
+// Helper for safe localStorage JSON parsing
+function safeStorageGetJson(key, defaultValue) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw || raw === 'undefined' || raw === 'null') return defaultValue;
+    return JSON.parse(raw);
+  } catch (e) {
+    return defaultValue;
+  }
+}
+
 // Global Application State
 const AppState = {
   currentLang: localStorage.getItem('krishi_lang') || 'en',
@@ -12,9 +23,9 @@ const AppState = {
   searchQuery: '',
   authorityFilter: 'all',
   sortBy: 'relevant',
-  savedSchemeIds: JSON.parse(localStorage.getItem('krishi_saved_schemes') || '["pm-kisan", "pmfby", "kcc"]'),
+  savedSchemeIds: safeStorageGetJson('krishi_saved_schemes', ["pm-kisan", "pmfby", "kcc"]),
   compareSchemeIds: [],
-  userProfile: JSON.parse(localStorage.getItem('krishi_user') || JSON.stringify({
+  userProfile: safeStorageGetJson('krishi_user', {
     name: "Ramesh Patel",
     nameHi: "रमेश पटेल",
     category: "Small Farmer (2.5 Acres)",
@@ -22,14 +33,14 @@ const AppState = {
     state: "Madhya Pradesh",
     district: "Ujjain",
     isLoggedIn: true
-  })),
+  }),
   // Application Kanban tracker states: 'not_started', 'docs_pending', 'applied', 'approved'
-  applicationTracker: JSON.parse(localStorage.getItem('krishi_tracker') || JSON.stringify({
+  applicationTracker: safeStorageGetJson('krishi_tracker', {
     "pm-kisan": "approved",
     "pmfby": "applied",
     "kcc": "docs_pending",
     "pmksy": "not_started"
-  }))
+  })
 };
 
 // UI Translations Dictionary for English <-> Hindi
@@ -38,43 +49,202 @@ const TRANSLATIONS = {
     appTitle: "KrishiSetu",
     topBarTitle: "National Agricultural Welfare Information & Application Guidance Platform",
     topBarVerified: "🛡️ Verified Data · Updated September 2026",
-    sideNavHeader: "Platform Navigation",
+    sideNavHeader: "Navigation",
     navHome: "Home",
     navCatalog: "Explore Schemes",
     navEligibility: "Eligibility Checker",
     navDashboard: "My Dashboard",
     navCompare: "Compare Schemes",
     navLocator: "KVK / CSC Locator",
+    navSaved: "❤️ Saved",
+    navCheckEligibility: "Check Eligibility",
+    navLogin: "👤 Login",
+    navLogout: "🚪 Logout",
+    navMyDashboard: "📊 My Dashboard",
+    
+    // AI Assistant
+    aiAssistantTitle: "Krishi Mitra AI",
+    aiAssistantSubtitle: "24/7 Scheme Assistant",
+    aiGroundedBadge: "● 100% Grounded in Scheme DB",
+    aiPlaceholder: "Ask about any scheme, documents, steps...",
+    aiChipPmkisan: "PM-KISAN Documents?",
+    aiChipKcc: "KCC 4% Interest?",
+    aiChipSolar: "Solar Pump Subsidy?",
+    aiChipSaved: "My Saved Schemes",
+
+    // Hero Section
+    heroBadge: "Single-Window Farmer Welfare Access",
     heroTitle: "Find & Apply For Every Agricultural Scheme In One Place.",
     heroSubtitle: "Stop searching across dozens of broken portals. Discover verified central, state, and NGO welfare subsidies with step-by-step application guidance.",
-    searchPlaceholder: "Search by scheme name, crop, subsidy, or topic (e.g., drip, KCC, tractor)...",
+    searchPlaceholder: "Search by scheme name, crop, subsidy, or keyword (e.g. PM-KISAN, drip, KCC, drone)...",
+    heroExploreBtn: "Explore 36+ Schemes",
     statSchemes: "Verified Schemes",
-    statSubsidies: "Max Subsidy Support",
+    statSubsidies: "Subsidy Support",
     statStates: "States Covered",
-    statFarmers: "Empowered Farmers",
-    quickCheckTitle: "Quick Eligibility Check",
-    allCategories: "All Categories",
-    filterAuthority: "Issuing Authority",
+    quickCheckTitle: "Instant Scheme Matcher",
+    quickCheckBadge: "2-Minute Check",
+    labelState: "Your State / राज्य",
+    labelLand: "Cultivable Land Holding / भूमि आकार",
+    labelFocus: "Primary Focus / मुख्य फसल या उद्देश्य",
+    optMarginal: "Marginal Farmer (< 2.5 Acres / < 1 Ha)",
+    optSmall: "Small Farmer (2.5 to 5 Acres / 1-2 Ha)",
+    optMedium: "Medium Farmer (5 to 25 Acres / 2-10 Ha)",
+    optLarge: "Large Farmer (> 25 Acres / > 10 Ha)",
+    optIncome: "Direct Income Support & Pension",
+    optInsurance: "Crop Insurance & Weather Protection",
+    optIrrigation: "Drip / Sprinkler & Solar Pump",
+    optMechanization: "Tractor & Farm Machinery Subsidy",
+    optCredit: "Low-Interest Credit / KCC Loan",
+    findEligibleBtn: "Find My Eligible Schemes →",
+    trustStrip: "🏛️ Direct hand-off to official government portals · No middlemen fees",
+
+    // How It Works
+    howItWorksEyebrow: "A Guided Experience",
+    howItWorksTitle: "How KrishiSetu Solves the Welfare Gap",
+    howItWorksDesc: "Government portals provide raw notifications; we provide complete, step-by-step application guidance from document readiness to sanction.",
+    step1Title: "Centralized Discovery",
+    step1Desc: "Browse 36+ verified central, state, and NGO welfare programs categorized by benefit type, subsidy %, and deadline.",
+    step2Title: "Instant Eligibility",
+    step2Desc: "Answer a short 4-step wizard to see which schemes you legally qualify for with transparent match criteria.",
+    step3Title: "Step-by-Step Guidance",
+    step3Desc: "Get printable document checklists, detailed procedure timelines, and local office contact points before applying.",
+    step4Title: "Official Hand-Off & Track",
+    step4Desc: "Apply directly on the authentic government portal and monitor your self-reported milestone progress on your Dashboard.",
+
+    // Featured Schemes
+    featuredEyebrow: "Welfare Scheme Catalog",
+    featuredTitle: "Featured Agricultural Schemes",
+    featuredDesc: "Explore verified Central, State, and CSR welfare initiatives for small and marginal farmers.",
+    exploreAllBtn: "Explore All 36+ Schemes →",
+    viewAllCategoriesBtn: "View All Categories & Filter Options →",
+
+    // Capabilities
+    capabilitiesEyebrow: "Platform Capabilities",
+    capabilitiesTitle: "Everything a Farmer Needs to Secure Benefits",
+    capabilitiesDesc: "From checking your legal qualification to side-by-side comparison, tracking milestone status, and finding district help centers.",
+    cap1Title: "Eligibility Checker",
+    cap1Desc: "Answer 4 quick questions regarding your state, land holding, crops, and social category to find your 100% matching schemes.",
+    cap1Btn: "Launch Assessment →",
+    cap2Title: "Scheme Comparison",
+    cap2Desc: "Compare up to 3 schemes side-by-side across subsidies, land limits, paperwork requirements, and timelines.",
+    cap2Btn: "Open Comparison Matrix →",
+    cap3Title: "Application Pipeline",
+    cap3Desc: "Track your bookmarked schemes across 4 Kanban milestones: Not Started, Docs Pending, Applied, and Sanctioned.",
+    cap3Btn: "View My Dashboard →",
+    cap4Title: "KVK & CSC Directory",
+    cap4Desc: "Find verified district Krishi Vigyan Kendras and Digital Seva CSC centers with instant Google Search and Maps directions.",
+    cap4Btn: "Find Nearest Center →",
+
+    // Catalog Page
+    breadcrumbHome: "Home",
+    breadcrumbCatalog: "Explore Schemes",
+    catalogPageTitle: "Verified Agricultural Schemes Catalog",
+    catalogPageDesc: "Filter across 15+ agricultural domains or search by specific equipment, subsidy, or crop. Every scheme includes step-by-step guidance, required documents checklist, and official portal links.",
+    catalogSearchPlaceholder: "Filter by scheme name, keyword, or crop...",
     filterAllAuth: "All Authorities",
-    filterCentral: "Central Government",
-    filterState: "State Governments",
+    filterCentral: "Central Govt",
     filterNgo: "NGO & CSR Programs",
-    sortLabel: "Sort By",
     sortRelevant: "Most Relevant",
     sortSubsidy: "Highest Subsidy",
     sortClosing: "Closing Soon",
-    viewDetails: "View Guidance & Steps",
+
+    // Scheme Card & Modal
+    cardSubsidyLabel: "Key Subsidy Benefit",
+    cardViewBtn: "View Steps & Guide",
+    cardApplyBtn: "Apply Now ↗",
+    cardCompare: "Compare",
+    cardOffline: "Offline (CSC)",
+    modalSubsidyLabel: "Key Subsidy / Financial Benefit",
+    modalBenefitsTitle: "✨ Key Benefits",
+    modalEligTitle: "🎯 Who is Eligible?",
+    modalTargetGroup: "Target Group:",
+    modalDocsTitle: "📋 Required Documents Checklist",
+    modalPrintBtn: "🖨️ Print / Download Checklist",
+    modalProcedureTitle: "🚀 Step-by-Step Application Procedure (How to Apply)",
+    modalOfficialDocsTitle: "📄 Official Documents & Proof Guidelines",
+    modalProofDocBtn: "Proof Guidelines ↗",
+    cardProofBtn: "Guidelines ↗",
     readAloud: "Read Scheme Aloud",
     stopReading: "Stop Audio",
-    applyOfficial: "Apply on Official Portal",
-    downloadChecklist: "Print / Download Document Checklist",
-    askAiAboutThis: "Ask AI About This Scheme",
-    savedAlert: "Scheme saved to your Dashboard!",
-    removedAlert: "Scheme removed from bookmarks.",
+    modalSaveBtn: "🤍 Save Scheme",
+    modalAskAiBtn: "🤖 Ask AI Assistant",
+    applyOfficial: "Apply on Official Portal ↗",
+
+    // Eligibility Page
+    breadcrumbEligibility: "Eligibility Checker",
+    eligibilityPageTitle: "Multi-Factor Agricultural Eligibility Checker",
+    eligibilityPageDesc: "Complete this simple 4-step assessment to receive ranked scheme recommendations with transparent \"Why you match\" explanations based on your state, land holding, crops, and social category.",
+    stepNode1: "Location & Land",
+    stepNode2: "Crops & Farming",
+    stepNode3: "Farmer Category",
+    stepNode4: "Results",
+    wizStep1Heading: "Step 1: Location & Landholding Size",
+    wizStateLabel: "State / Union Territory",
+    wizLandLabel: "Total Cultivable Land (in Hectares)",
+    wizLandNote: "Note: 1 Hectare ≈ 2.47 Acres",
+    wizStep1Next: "Next: Farming Type →",
+    wizStep2Heading: "Step 2: Crops & Agriculture Practice",
+    wizCropLabel: "Primary Crop Category",
+    wizIrrigationLabel: "Existing Water / Irrigation Source",
+    wizPrevBtn: "← Previous",
+    wizStep2Next: "Next: Category & Income →",
+    wizStep3Heading: "Step 3: Social Category & Income Band",
+    wizScaleLabel: "Farmer Scale / Land Classification",
+    wizIncomeLabel: "Annual Household Income",
+    wizSpecialLabel: "Special Eligibility Group",
+    wizEnrollmentLabel: "Existing Central Enrollments",
+    wizCalcBtn: "Calculate Matches Now →",
+    wizRerunBtn: "↻ Re-run Eligibility Check",
+    wizViewDashboardBtn: "View in My Dashboard →",
+
+    // Compare Page
+    breadcrumbCompare: "Compare Schemes",
+    comparePageTitle: "Side-by-Side Scheme Comparison Matrix",
+    comparePageDesc: "Compare up to 3 welfare schemes side-by-side. Select any scheme from the dropdown slots below to evaluate subsidies, eligible land limits, required documentation, and direct application links.",
+    compareSelectTitle: "Select Schemes to Compare (Max 3)",
+    compareSelectDesc: "Select any scheme to inspect subsidies, land limits, and procedures side-by-side.",
+    paramHeader: "Parameter",
+    paramAuthority: "Issuing Authority",
+    paramSubsidy: "Subsidy / Benefit",
+    paramLand: "Eligible Landholding",
+    paramTarget: "Target Beneficiaries",
+    paramDocs: "Required Documents",
+    paramSteps: "Procedure Steps",
+    paramActions: "Actions",
+    compareBarLabel: "Compare Schemes",
+    compareBarBtn: "Compare Side-by-Side →",
     compareMaxAlert: "You can compare up to 3 schemes at a time.",
-    compareBtn: "Compare Schemes Now",
-    exploreAllBtn: "Explore All 36+ Verified Schemes →",
-    checkEligibilityBtn: "Check Eligibility"
+    compareMinAlert: "Please select at least 2 schemes to compare.",
+
+    // Dashboard Page
+    breadcrumbDashboard: "My Dashboard",
+    dashboardPageTitle: "Farmer Dashboard & Application Pipeline",
+    dashboardPageDesc: "Monitor your self-reported milestone progress on your saved schemes. Move cards across milestones as you gather paperwork, submit online, and receive subsidies.",
+    pipelineEyebrow: "Interactive Workflow Tracker",
+    pipelineTitle: "Application Milestone Pipeline",
+    pipelineDesc: "Keep full control of your benefits. You can adjust each scheme's status directly from the dropdown inside each card.",
+    colNotStarted: "Not Started",
+    colDocsPending: "Documents Pending",
+    colApplied: "Applied on Portal",
+    colApproved: "Approved / Active",
+
+    // Locator Page
+    breadcrumbLocator: "KVK / CSC Locator",
+    locatorPageTitle: "Nearest KVK & Digital Seva Centres Locator",
+    locatorPageDesc: "Find your nearest certified Krishi Vigyan Kendra (ICAR) or Common Service Centre (CSC) for hands-on Aadhaar e-KYC, soil testing, and biometric authentication. Click any card to search for reviews and business hours on Google, or click the address pin to navigate via Google Maps.",
+    locatorSearchPlaceholder: "Search by district, center name, city, state, or service...",
+    filterAllCenters: "All Centers",
+    filterKvk: "🌱 Krishi Vigyan Kendras (KVK)",
+    filterCsc: "💻 Digital Seva CSCs",
+
+    // Footer
+    footerBrandDesc: "A centralized digital bridge helping Indian farmers navigate agricultural welfare schemes with clarity, step-by-step guidance, and grounded AI assistance.",
+    footerProject: "Academic PBL Engineering Project · Designed & Developed for Indian Farmers.",
+    footerPortals: "Key Portals",
+    footerPages: "Platform Pages",
+    footerSources: "Official Sources",
+    footerCopyright: "© 2026 KrishiSetu Platform. All scheme data verified against official PIB and Ministry of Agriculture releases.",
+    footerTagline: "Direct Hand-Off to Official Portals · Zero Middlemen · Accessible in English & हिन्दी"
   },
   hi: {
     appTitle: "कृषि सेतु",
@@ -87,43 +257,402 @@ const TRANSLATIONS = {
     navDashboard: "मेरा डैशबोर्ड",
     navCompare: "योजना तुलना",
     navLocator: "केवीके / सीएससी केंद्र",
-    heroTitle: "सभी सरकारी व एनजीओ कृषि योजनाएं अब एक ही स्थान पर।",
-    heroSubtitle: "अलग-अलग वेबसाइटों पर भटकना बंद करें। चरण-दर-चरण आवेदन मार्गदर्शन के साथ सत्यापित सरकारी व सीएसआर अनुदान खोजें।",
-    searchPlaceholder: "योजना का नाम, फसल, सब्सिडी या विषय खोजें (जैसे पीएम-किसान, ड्रिप, केसीसी, ट्रैक्टर)...",
+    navSaved: "❤️ सहेजे गए",
+    navCheckEligibility: "पात्रता जांचें",
+    navLogin: "👤 लॉगिन",
+    navLogout: "🚪 लॉगआउट",
+    navMyDashboard: "📊 मेरा डैशबोर्ड",
+
+    // AI Assistant
+    aiAssistantTitle: "कृषि मित्र AI",
+    aiAssistantSubtitle: "24/7 कृषि योजना सहायक",
+    aiGroundedBadge: "● 100% सत्यापित योजना डेटा",
+    aiPlaceholder: "किसी भी योजना, दस्तावेज़, आवेदन प्रक्रिया के बारे में पूछें...",
+    aiChipPmkisan: "पीएम-किसान दस्तावेज़?",
+    aiChipKcc: "केसीसी 4% ब्याज ऋण?",
+    aiChipSolar: "सोलर पंप सब्सिडी?",
+    aiChipSaved: "मेरी सहेजी गई योजनाएं",
+
+    // Hero Section
+    heroBadge: "एकल खिड़की किसान कल्याण पहुंच",
+    heroTitle: "सभी सरकारी व एनजीओ कृषि योजनाएं <span class=\"accent\">अब एक ही स्थान पर।</span>",
+    heroSubtitle: "दर्जनों अलग-अलग पोर्टलों पर भटकना बंद करें। चरण-दर-चरण आवेदन मार्गदर्शन के साथ सत्यापित केंद्रीय, राज्य और एनजीओ अनुदान खोजें।",
+    searchPlaceholder: "योजना का नाम, फसल, सब्सिडी या कीवर्ड से खोजें (जैसे पीएम-किसान, ड्रिप, केसीसी, ड्रोन)...",
+    heroExploreBtn: "36+ योजनाएं देखें",
     statSchemes: "सत्यापित योजनाएं",
-    statSubsidies: "अधिकतम सब्सिडी",
-    statStates: "सभी राज्य कवर्ड",
-    statFarmers: "लाभान्वित किसान",
-    quickCheckTitle: "त्वरित पात्रता जांच",
-    allCategories: "सभी श्रेणियां",
-    filterAuthority: "जारीकर्ता संस्था",
+    statSubsidies: "सब्सिडी सहायता",
+    statStates: "सभी राज्य शामिल",
+    quickCheckTitle: "त्वरित योजना मिलान",
+    quickCheckBadge: "2-मिनट में जांचें",
+    labelState: "आपका राज्य",
+    labelLand: "कृषि योग्य भूमि का आकार",
+    labelFocus: "मुख्य उद्देश्य / प्राथमिकता",
+    optMarginal: "सीमांत किसान (< 2.5 एकड़ / < 1 हे.)",
+    optSmall: "लघु किसान (2.5 से 5 एकड़ / 1-2 हे.)",
+    optMedium: "मध्यम किसान (5 से 25 एकड़ / 2-10 हे.)",
+    optLarge: "बड़े किसान (> 25 एकड़ / > 10 हे.)",
+    optIncome: "प्रत्यक्ष आय सहायता एवं पेंशन",
+    optInsurance: "फसल बीमा एवं मौसम सुरक्षा",
+    optIrrigation: "ड्रिप / स्प्रिंकलर एवं सोलर पंप",
+    optMechanization: "ट्रैक्टर एवं कृषि यंत्र सब्सिडी",
+    optCredit: "कम ब्याज ऋण / केसीसी लोन",
+    findEligibleBtn: "मेरी पात्र योजनाएं खोजें →",
+    trustStrip: "🏛️ आधिकारिक सरकारी पोर्टलों पर सीधा मार्गदर्शन · शून्य बिचौलिया शुल्क",
+
+    // How It Works
+    howItWorksEyebrow: "एक मार्गदर्शित अनुभव",
+    howItWorksTitle: "कृषि सेतु किसान कल्याण की दूरी कैसे मिटाता है",
+    howItWorksDesc: "सरकारी पोर्टल केवल जटिल सूचनाएं देते हैं; हम दस्तावेज़ तैयारी से लेकर स्वीकृति तक संपूर्ण, चरण-दर-चरण आवेदन मार्गदर्शन प्रदान करते हैं।",
+    step1Title: "केंद्रीकृत खोज",
+    step1Desc: "लाभ प्रकार, सब्सिडी प्रतिशत और समय-सीमा के अनुसार वर्गीकृत 36+ सत्यापित योजनाओं को आसानी से देखें।",
+    step2Title: "त्वरित पात्रता जांच",
+    step2Desc: "पारदर्शी मिलान मानदंडों के साथ देखें कि आप किन योजनाओं के लिए पात्र हैं, केवल 4 आसान सवालों में।",
+    step3Title: "चरण-दर-चरण मार्गदर्शन",
+    step3Desc: "आवेदन करने से पहले प्रिंट करने योग्य दस्तावेज़ चेकलिस्ट, विस्तृत प्रक्रिया समयरेखा और स्थानीय कार्यालय संपर्क प्राप्त करें।",
+    step4Title: "आधिकारिक पोर्टल व ट्रैकिंग",
+    step4Desc: "सत्यापित सरकारी पोर्टल पर सीधे आवेदन करें और अपने डैशबोर्ड पर अपनी आवेदन प्रगति को ट्रैक करें।",
+
+    // Featured Schemes
+    featuredEyebrow: "कल्याणकारी योजना सूची",
+    featuredTitle: "प्रमुख कृषि योजनाएं",
+    featuredDesc: "लघु एवं सीमांत किसानों के लिए सत्यापित केंद्रीय, राज्य और सीएसआर कल्याणकारी पहलों का अन्वेषण करें।",
+    exploreAllBtn: "सभी 36+ योजनाएं देखें →",
+    viewAllCategoriesBtn: "सभी श्रेणियां एवं फ़िल्टर विकल्प देखें →",
+
+    // Capabilities
+    capabilitiesEyebrow: "मंच की क्षमताएं",
+    capabilitiesTitle: "किसानों को लाभ प्राप्त करने के लिए सब कुछ एक जगह",
+    capabilitiesDesc: "अपनी पात्रता जांचने से लेकर तुलना करने, आवेदन स्थिति ट्रैक करने और जिला सहायता केंद्र खोजने तक।",
+    cap1Title: "पात्रता जांचकर्ता",
+    cap1Desc: "अपने राज्य, भूमि, फसल और श्रेणी के 4 त्वरित प्रश्नों के उत्तर दें और 100% उपयुक्त योजनाएं पाएं।",
+    cap1Btn: "पात्रता जांच शुरू करें →",
+    cap2Title: "योजना तुलना",
+    cap2Desc: "सब्सिडी, भूमि सीमा, आवश्यक कागजात और समय-सीमा के आधार पर एक साथ 3 योजनाओं की तुलना करें।",
+    cap2Btn: "तुलना मैट्रिक्स खोलें →",
+    cap3Title: "आवेदन प्रगति पाइपलाइन",
+    cap3Desc: "अपनी सहेजी गई योजनाओं को 4 चरणों में ट्रैक करें: शुरू नहीं हुआ, दस्तावेज़ लंबित, आवेदन किया, और स्वीकृत।",
+    cap3Btn: "मेरा डैशबोर्ड देखें →",
+    cap4Title: "केवीके एवं सीएससी निर्देशिका",
+    cap4Desc: "गूगल मैप्स और त्वरित खोज के साथ अपने जिले के कृषि विज्ञान केंद्र और डिजिटल सेवा सीएससी केंद्र खोजें।",
+    cap4Btn: "निकटतम केंद्र खोजें →",
+
+    // Catalog Page
+    breadcrumbHome: "होम",
+    breadcrumbCatalog: "योजनाएं खोजें",
+    catalogPageTitle: "सत्यापित कृषि योजना सूची",
+    catalogPageDesc: "15+ कृषि श्रेणियों में फ़िल्टर करें या विशिष्ट उपकरण, सब्सिडी या फसल के आधार पर खोजें। प्रत्येक योजना में चरण-दर-चरण मार्गदर्शन, आवश्यक दस्तावेज़ चेकलिस्ट और आधिकारिक पोर्टल लिंक शामिल हैं।",
+    catalogSearchPlaceholder: "योजना का नाम, कीवर्ड या फसल लिखकर खोजें...",
     filterAllAuth: "सभी संस्थाएं",
     filterCentral: "केंद्र सरकार",
-    filterState: "राज्य सरकारें",
-    filterNgo: "एनजीओ एवं सीएसआर",
-    sortLabel: "क्रमबद्ध करें",
+    filterNgo: "एनजीओ एवं सीएसआर कार्यक्रम",
     sortRelevant: "सबसे प्रासंगिक",
     sortSubsidy: "अधिकतम सब्सिडी",
     sortClosing: "समाप्ति शीघ्र",
-    viewDetails: "मार्गदर्शन व चरण देखें",
+
+    // Scheme Card & Modal
+    cardSubsidyLabel: "मुख्य लाभ / अनुदान",
+    cardViewBtn: "विवरण व प्रक्रिया",
+    cardApplyBtn: "आवेदन करें ↗",
+    cardCompare: "तुलना",
+    cardOffline: "ऑफलाइन (CSC)",
+    modalSubsidyLabel: "मुख्य सब्सिडी / वित्तीय लाभ",
+    modalBenefitsTitle: "✨ मुख्य लाभ",
+    modalEligTitle: "🎯 कौन पात्र है?",
+    modalTargetGroup: "लक्षित समूह:",
+    modalDocsTitle: "📋 आवश्यक दस्तावेज़ चेकलिस्ट",
+    modalPrintBtn: "🖨️ चेकलिस्ट प्रिंट / डाउनलोड करें",
+    modalProcedureTitle: "🚀 चरण-दर-चरण आवेदन प्रक्रिया (आवेदन कैसे करें)",
+    modalOfficialDocsTitle: "📄 आधिकारिक दस्तावेज़ एवं दिशानिर्देश",
+    modalProofDocBtn: "प्रमाण दिशानिर्देश ↗",
+    cardProofBtn: "दिशानिर्देश ↗",
     readAloud: "योजना विवरण सुनें",
     stopReading: "ऑडियो रोकें",
-    applyOfficial: "आधिकारिक पोर्टल पर आवेदन करें",
-    downloadChecklist: "दस्तावेज़ चेकलिस्ट प्रिंट करें",
-    askAiAboutThis: "इस योजना पर AI से पूछें",
-    savedAlert: "योजना आपके डैशबोर्ड में सहेज ली गई!",
-    removedAlert: "योजना बुकमार्क से हटा दी गई।",
+    modalSaveBtn: "🤍 योजना सहेजें",
+    modalAskAiBtn: "🤖 AI सहायक से पूछें",
+    applyOfficial: "आधिकारिक पोर्टल पर आवेदन करें ↗",
+
+    // Eligibility Page
+    breadcrumbEligibility: "पात्रता जांचकर्ता",
+    eligibilityPageTitle: "बहु-कारक कृषि पात्रता जांचकर्ता",
+    eligibilityPageDesc: "अपने राज्य, भूमि, फसल और सामाजिक श्रेणी के आधार पर पारदर्शी \"आप क्यों पात्र हैं\" विवरण के साथ सर्वोत्तम योजनाएं प्राप्त करने के लिए यह आसान 4-चरणीय मूल्यांकन पूरा करें।",
+    stepNode1: "स्थान एवं भूमि",
+    stepNode2: "फसल एवं खेती",
+    stepNode3: "किसान श्रेणी",
+    stepNode4: "परिणाम",
+    wizStep1Heading: "चरण 1: स्थान एवं भूमि का आकार",
+    wizStateLabel: "राज्य / केंद्र शासित प्रदेश",
+    wizLandLabel: "कुल कृषि योग्य भूमि (हेक्टेयर में)",
+    wizLandNote: "नोट: 1 हेक्टेयर ≈ 2.47 एकड़",
+    wizStep1Next: "अगला: खेती का प्रकार →",
+    wizStep2Heading: "चरण 2: फसलें एवं कृषि पद्धति",
+    wizCropLabel: "प्राथमिक फसल श्रेणी",
+    wizIrrigationLabel: "मौजूदा जल / सिंचाई स्रोत",
+    wizPrevBtn: "← पिछला",
+    wizStep2Next: "अगला: श्रेणी एवं आय →",
+    wizStep3Heading: "चरण 3: सामाजिक श्रेणी एवं आय वर्ग",
+    wizScaleLabel: "किसान वर्ग / भूमि वर्गीकरण",
+    wizIncomeLabel: "वार्षिक पारिवारिक आय",
+    wizSpecialLabel: "विशेष पात्रता समूह",
+    wizEnrollmentLabel: "मौजूदा केंद्रीय योजना नामांकन",
+    wizCalcBtn: "पात्र योजनाएं खोजें →",
+    wizRerunBtn: "↻ पुनः पात्रता जांचें",
+    wizViewDashboardBtn: "मेरे डैशबोर्ड में देखें →",
+
+    // Compare Page
+    breadcrumbCompare: "योजना तुलना",
+    comparePageTitle: "योजना तुलना मैट्रिक्स",
+    comparePageDesc: "एक साथ 3 कल्याणकारी योजनाओं की तुलना करें। सब्सिडी, पात्र भूमि सीमा, आवश्यक कागजात और प्रत्यक्ष आवेदन लिंक का मूल्यांकन करने के लिए नीचे दिए गए स्लॉट से किसी भी योजना का चयन करें।",
+    compareSelectTitle: "तुलना के लिए योजनाएं चुनें (अधिकतम 3)",
+    compareSelectDesc: "विभिन्न मापदंडों पर सीधे तुलना करने के लिए ड्रॉपडाउन से योजना चुनें।",
+    paramHeader: "मापदंड",
+    paramAuthority: "जारीकर्ता संस्था",
+    paramSubsidy: "सब्सिडी / मुख्य लाभ",
+    paramLand: "पात्र भूमि आकार",
+    paramTarget: "लक्षित लाभार्थी",
+    paramDocs: "आवश्यक दस्तावेज़",
+    paramSteps: "आवेदन प्रक्रिया के चरण",
+    paramActions: "कार्रवाई",
+    compareBarLabel: "योजनाओं की तुलना करें",
+    compareBarBtn: "आमने-सामने तुलना करें →",
     compareMaxAlert: "आप एक समय में अधिकतम 3 योजनाओं की तुलना कर सकते हैं।",
-    compareBtn: "योजनाओं की तुलना करें",
-    exploreAllBtn: "सभी 36+ सत्यापित योजनाएं देखें →",
-    checkEligibilityBtn: "पात्रता जांचें"
+    compareMinAlert: "कृपया तुलना के लिए कम से कम 2 योजनाएं चुनें।",
+
+    // Dashboard Page
+    breadcrumbDashboard: "मेरा डैशबोर्ड",
+    dashboardPageTitle: "किसान डैशबोर्ड एवं आवेदन पाइपलाइन",
+    dashboardPageDesc: "अपनी सहेजी गई योजनाओं पर अपनी प्रगति की निगरानी करें। कागजात एकत्र करने, ऑनलाइन जमा करने और सब्सिडी प्राप्त करने के साथ कार्ड को चरणों में आगे बढ़ाएं।",
+    pipelineEyebrow: "कार्यप्रवाह ट्रैकर",
+    pipelineTitle: "आवेदन चरण पाइपलाइन",
+    pipelineDesc: "अपने लाभों पर पूर्ण नियंत्रण रखें। आप प्रत्येक कार्ड के अंदर ड्रॉपडाउन से सीधे योजना की स्थिति बदल सकते हैं।",
+    colNotStarted: "शुरू नहीं हुआ",
+    colDocsPending: "दस्तावेज़ लंबित",
+    colApplied: "पोर्टल पर आवेदन किया",
+    colApproved: "स्वीकृत / सक्रिय",
+
+    // Locator Page
+    breadcrumbLocator: "केवीके / सीएससी केंद्र",
+    locatorPageTitle: "निकटतम केवीके एवं डिजिटल सेवा सीएससी केंद्र खोजें",
+    locatorPageDesc: "आधार ई-केवाईसी, मृदा परीक्षण और बायोमेट्रिक सत्यापन के लिए अपने निकटतम प्रमाणित कृषि विज्ञान केंद्र (आईसीएआर) या सामान्य सेवा केंद्र (सीएससी) खोजें। गूगल मैप्स और त्वरित खोज के साथ विवरण देखें।",
+    locatorSearchPlaceholder: "जिला, केंद्र का नाम, शहर, राज्य या सेवा द्वारा खोजें...",
+    filterAllCenters: "सभी केंद्र",
+    filterKvk: "🌱 कृषि विज्ञान केंद्र (KVK)",
+    filterCsc: "💻 डिजिटल सेवा केंद्र (CSC)",
+
+    // Footer
+    footerBrandDesc: "भारतीय किसानों को स्पष्टता, चरण-दर-चरण मार्गदर्शन और प्रामाणिक AI सहायता के साथ कृषि कल्याण योजनाओं का लाभ उठाने में मदद करने वाला डिजिटल सेतु।",
+    footerProject: "शैक्षणिक पीबीएल इंजीनियरिंग प्रोजेक्ट · भारतीय किसानों के लिए समर्पित।",
+    footerPortals: "प्रमुख सरकारी पोर्टल",
+    footerPages: "मंच के पृष्ठ",
+    footerSources: "आधिकारिक स्रोत",
+    footerCopyright: "© 2026 कृषि सेतु मंच। समस्त योजना डेटा आधिकारिक पीआईबी एवं कृषि मंत्रालय द्वारा सत्यापित।",
+    footerTagline: "आधिकारिक पोर्टलों पर सीधा मार्गदर्शन · शून्य बिचौलिया · अंग्रेजी एवं हिन्दी में उपलब्ध"
   }
 };
 
-// Current SpeechSynthesis utterance reference
+// Hindi Mappings for Documents & Services
+const DOCS_HI_MAP = {
+  "Aadhaar": "आधार कार्ड",
+  "Bank account details": "बैंक खाता विवरण",
+  "Bank Account": "बैंक खाता विवरण",
+  "Bank Passbook": "बैंक पासबुक",
+  "Land Record": "भूमि अभिलेख (खसरा/खतौनी)",
+  "Detailed Project Report (DPR)": "विस्तृत परियोजना रिपोर्ट (DPR)",
+  "Project Report (DPR)": "परियोजना रिपोर्ट (DPR)",
+  "Job Card": "मनरेगा जॉब कार्ड",
+  "Aadhaar Card": "आधार कार्ड",
+  "Aadhaar Card (linked to active mobile)": "आधार कार्ड (सक्रिय मोबाइल नंबर से लिंक)",
+  "Aadhaar Card and PAN Card / Voter ID": "आधार कार्ड और पैन कार्ड / मतदाता पहचान पत्र",
+  "Aadhaar Card and Land Record (7/12, Khatauni)": "आधार कार्ड और भूमि अभिलेख (7/12, खतौनी)",
+  "Aadhaar & PAN Card": "आधार कार्ड एवं पैन कार्ड",
+  "Land Record Documents (Khasra/Khatauni / Ror / 7/12 extract)": "भूमि रिकॉर्ड दस्तावेज़ (खसरा/खतौनी / 7/12 नकल)",
+  "Aadhaar-seeded Bank Passbook / Account statement with IFSC": "आधार-लिंक बैंक पासबुक / खाता विवरण IFSC सहित",
+  "Active Mobile number linked to Aadhaar (for e-KYC OTP)": "आधार से लिंक सक्रिय मोबाइल नंबर (ई-केवाईसी ओटीपी हेतु)",
+  "Passport size photograph": "पासपोर्ट साइज फोटो",
+  "Passport size photographs & Mobile number": "पासपोर्ट साइज फोटो एवं मोबाइल नंबर",
+  "Savings Bank Account Passbook with IFSC": "आईएफएससी सहित बचत बैंक पासबुक",
+  "Bank Savings Account Passbook with IFSC": "आईएफएससी सहित बचत बैंक खाता पासबुक",
+  "Cancelled Cheque / Bank Passbook": "रद्द चेक / बैंक पासबुक",
+  "Bank Account Details": "बैंक खाता विवरण",
+  "Bank Account details": "बैंक खाता विवरण",
+  "Bank details": "बैंक विवरण",
+  "Bank Details": "बैंक विवरण",
+  "Active Bank Account Passbook": "सक्रिय बैंक खाता पासबुक",
+  "Bank Account details with IFSC": "आईएफएससी सहित बैंक खाता विवरण",
+  "Bank Account details with cancelled cheque": "रद्द चेक सहित बैंक खाता विवरण",
+  "Bank Account details & 6 months statement": "बैंक खाता विवरण व 6 महीने का स्टेटमेंट",
+  "Copy of Land Record (Khasra/Khatauni)": "भूमि अभिलेख की प्रति (खसरा/खतौनी)",
+  "Land Records (7/12 / Patta)": "भूमि अभिलेख (7/12 / पट्टा)",
+  "Land Records": "भूमि अभिलेख",
+  "Land papers": "भूमि के कागजात",
+  "Land Record (Jamabandi / 7/12)": "भूमि अभिलेख (जमाबंदी / 7/12)",
+  "Land Ownership Documents (Jamabandi / ROR)": "भूमि स्वामित्व दस्तावेज (जमाबंदी / आरओआर)",
+  "Land Ownership Record (Khatauni / Patta)": "भूमि स्वामित्व अभिलेख (खतौनी / पट्टा)",
+  "Land Ownership Documents (Khatauni / 7/12)": "भूमि स्वामित्व दस्तावेज (खतौनी / 7/12)",
+  "Land Ownership Document (RoR / 7/12) or Tenant/Sharecropper Agreement Declaration": "भूमि स्वामित्व दस्तावेज (खतौनी / 7/12) या काश्तकार/बटाईदार अनुबंध",
+  "Land Ownership Record / Certified Copy of Patta / Tenancy deed": "भूमि स्वामित्व अभिलेख / पट्टे की प्रमाणित प्रति / बटाईदार अनुबंध",
+  "Land Document / Long term lease deed (minimum 10 years)": "भूमि दस्तावेज / दीर्घकालिक पट्टा विलेख (न्यूनतम 10 वर्ष)",
+  "Land title deed": "भूमि स्वामित्व विलेख",
+  "Land title / House site document": "भूमि पट्टा / घर का भूखंड दस्तावेज",
+  "Land Title Deed / Forest Rights Title": "भूमि स्वामित्व विलेख / वन अधिकार पट्टा",
+  "Land/Shed ownership or lease": "भूमि या शेड का स्वामित्व/पट्टा",
+  "Land or Shed verification": "भूमि या शेड का सत्यापन प्रमाण",
+  "Survey / Khasra number of land parcel": "भूमि का खसरा / खाता संख्या",
+  "Sowing Certificate / Crop declaration issued by Patwari / Village Revenue Officer": "पटवारी / ग्राम राजस्व अधिकारी द्वारा जारी बुवाई प्रमाण पत्र / फसल घोषणा",
+  "Sowing Certificate / Land possession certificate from Patwari": "पटवारी द्वारा जारी बुवाई प्रमाण पत्र / भूमि स्वामित्व प्रमाण पत्र",
+  "Crop Sowing Declaration / Girdawari": "फसल बुवाई घोषणा / गिरदावरी",
+  "Land Records (Girdawari / Sowing verification)": "भूमि अभिलेख (गिरदावरी / बुवाई सत्यापन)",
+  "Nominee details and relationship proof": "नामांकित व्यक्ति (नॉमिनी) का विवरण एवं संबंध प्रमाण",
+  "Completed 1-page KCC application form": "पूर्ण भरा हुआ 1-पेज केसीसी आवेदन फॉर्म",
+  "Declaration of existing crop loans and village revenue officer verification": "मौजूदा फसल ऋणों की घोषणा एवं ग्राम राजस्व अधिकारी सत्यापन",
+  "KCC Account details": "केसीसी खाता विवरण",
+  "Repayment receipt": "ऋण पुनर्भुगतान रसीद",
+  "Water source proof & electricity connection bill/solar pump certificate": "जल स्रोत प्रमाण एवं बिजली बिल / सोलर पंप प्रमाण पत्र",
+  "Quotation / Design layout from registered micro-irrigation supplier": "पंजीकृत सूक्ष्म सिंचाई आपूर्तिकर्ता से कोटेशन / डिजाइन लेआउट",
+  "Soil & water test report (optional/desirable)": "मृदा एवं जल परीक्षण रिपोर्ट (वैकल्पिक)",
+  "Soil Health Card or Land Record Extract": "मृदा स्वास्थ्य कार्ड या भूमि अभिलेख उद्धरण",
+  "Water quality test report": "जल गुणवत्ता परीक्षण रिपोर्ट",
+  "Cluster formation agreement": "क्लस्टर गठन अनुबंध",
+  "Fruit Orchard / Crop Plantation proof": "फलोद्यान / फसल वृक्षारोपण प्रमाण",
+  "Mobile number for SMS auction notifications": "एसएमएस नीलामी सूचनाओं हेतु मोबाइल नंबर",
+  "Mobile number": "मोबाइल नंबर",
+  "Mobile Number": "मोबाइल नंबर",
+  "Caste Certificate (for SC/ST benefit) and Quotation from authorized machinery dealer": "जाति प्रमाण पत्र (अजा/अजजा लाभ हेतु) एवं अधिकृत मशीनरी डीलर से कोटेशन",
+  "SHG Registration Certificate": "एसएचजी पंजीकरण प्रमाण पत्र",
+  "10th Marksheet of pilot": "नामित पायलट सदस्य की 10वीं की अंकतालिका",
+  "Training Completion Certificate": "प्रशिक्षण पूर्णता प्रमाण पत्र",
+  "Training Certificate in Dairy Management": "डेयरी प्रबंधन में प्रशिक्षण प्रमाण पत्र",
+  "Bank in-principle loan sanction letter": "बैंक सैद्धांतिक ऋण स्वीकृति पत्र",
+  "Veterinary fitness certificate of animals": "पशुओं का पशु चिकित्सा स्वास्थ्य प्रमाण पत्र",
+  "Electricity bill of processing premises / Rent agreement": "खाद्य प्रसंस्करण परिसर का बिजली बिल / किराया अनुबंध",
+  "Detailed Project Report (DPR) generated on portal": "पोर्टल द्वारा तैयार विस्तृत परियोजना रिपोर्ट (DPR)",
+  "Pitch Deck / DPR": "पिच डेक / विस्तृत परियोजना रिपोर्ट (DPR)",
+  "Educational qualification proof": "शैक्षणिक योग्यता प्रमाण",
+  "Gram Panchayat recommendation resolution": "ग्राम पंचायत अनुशंसा प्रस्ताव",
+  "Gram Panchayat / Gram Sabha recommendation resolution": "ग्राम पंचायत / ग्राम सभा का अनुशंसा प्रस्ताव",
+  "Gram Panchayat / Block Agriculture Officer Endorsement": "ग्राम पंचायत / प्रखंड कृषि अधिकारी का अनुमोदन",
+  "Panchayat resolution": "ग्राम पंचायत का प्रस्ताव",
+  "Farmer Interest Group (FIG) membership (optional)": "किसान मित्र / आत्मा किसान समूह सदस्यता (वैकल्पिक)",
+  "SHG Passbook": "एसएचजी बैंक पासबुक",
+  "SHG Membership passbook with minimum 6 months regular savings": "न्यूनतम 6 महीने की नियमित बचत वाली एसएचजी पासबुक",
+  "Ration Card": "राशन कार्ड",
+  "MGNREGA Job Card": "मनरेगा जॉब कार्ड",
+  "SECC-2011 Deprivation verification slip / PMAY ID": "एसईसीसी-2011 पात्रता पर्ची / पीएमएवाई आईडी",
+  "FSSAI Food Business Registration / Application": "एफएसएसएआई खाद्य व्यवसाय पंजीकरण / आवेदन",
+  "Udyam Aadhar Registration (MSME)": "उद्यम आधार पंजीकरण (एमएसएमई)",
+  "Quotation of food processing machinery": "खाद्य प्रसंस्करण मशीनरी का कोटेशन",
+  "Fisheries Department NOC / Feasibility Report": "मत्स्य विभाग से एनओसी / व्यवहार्यता रिपोर्ट"
+};
+
+const SERVICES_HI_MAP = {
+  "Soil & Water Testing": "मृदा एवं जल परीक्षण",
+  "Certified Seed Distribution": "प्रमाणित बीज वितरण",
+  "Demonstration Farms": "प्रदर्शन प्रक्षेत्र",
+  "Farmer Helpdesk": "किसान सहायता केंद्र",
+  "Micro-irrigation Advisory": "सूक्ष्म सिंचाई सलाह",
+  "Tissue Culture Plants": "टिशू कल्चर पौधे",
+  "Bio-fertilizers": "जैव उर्वरक",
+  "Agri-Drone Demos": "कृषि ड्रोन प्रदर्शन",
+  "PM-KISAN e-KYC": "पीएम-किसान ई-केवाईसी",
+  "Biometric Fingerprint Scan": "बायोमेट्रिक फिंगरप्रिंट स्कैन",
+  "PMFBY Crop Insurance Filing": "पीएमएफबीवाई फसल बीमा",
+  "Aadhaar-Bank Seeding Status": "आधार-बैंक सीडिंग स्थिति",
+  "KCC Application Assistance": "केसीसी ऋण आवेदन सहायता",
+  "Solar Pump Subsidies (KUSUM)": "सोलर पंप सब्सिडी (कुसुम)",
+  "Agri Machinery Subsidy (SMAM)": "कृषि यंत्र सब्सिडी (एसएमएएम)",
+  "e-NAM Trader & Farmer Reg": "ई-नाम किसान पंजीकरण",
+  "Crop Loss Survey Assistance": "फसल क्षति सर्वेक्षण सहायता",
+  "Panchayat Seva & Utility Bills": "पंचायत सेवाएं व बिल भुगतान",
+  "Digital Land Records (Bhulekh)": "डिजिटल भूमि अभिलेख (भूलेख)",
+  "Direct DBT Linking Verification": "प्रत्यक्ष डीबीटी लिंकिंग सत्यापन",
+  "Aadhaar e-KYC": "आधार ई-केवाईसी",
+  "Soil Health Testing": "मृदा स्वास्थ्य परीक्षण",
+  "Seed Distribution": "बीज वितरण",
+  "Scheme Enrollment": "योजना पंजीकरण",
+  "KCC Support": "केसीसी ऋण सहायता",
+  "Biometric Authentication": "बायोमेट्रिक प्रमाणीकरण",
+  "Crop Insurance Claim": "फसल बीमा दावा",
+  "Farmer Registration": "किसान पंजीकरण",
+  "Direct Benefit Transfer (DBT)": "प्रत्यक्ष लाभ अंतरण (DBT)",
+  "Agri Advisory": "कृषि सलाह",
+  "PM-KISAN Registration": "पीएम-किसान पंजीकरण"
+};
+
+function translateSubsidy(text) {
+  if (!text) return "";
+  return text
+    .replace(/\/ year/gi, " / वर्ष")
+    .replace(/\/ hectare/gi, " / हेक्टेयर")
+    .replace(/\(Direct DBT\)/gi, "(प्रत्यक्ष डीबीटी)")
+    .replace(/Up to (\d+)% Subsidy/gi, "$1% तक सब्सिडी")
+    .replace(/100% centrally funded/gi, "100% केंद्र पोषित")
+    .replace(/4% Concessional Interest Rate/gi, "4% रियायती ब्याज दर")
+    .replace(/3% Prompt Repayment Incentive/gi, "3% शीघ्र पुनर्भुगतान प्रोत्साहन")
+    .replace(/60% Capital Subsidy/gi, "60% पूंजी अनुदान")
+    .replace(/₹3,000 \/ month pension/gi, "₹3,000 / माह पेंशन")
+    .replace(/₹1.5 Lakh to ₹50 Lakh/gi, "₹1.5 लाख से ₹50 लाख")
+    .replace(/₹10,000 \/ acre/gi, "₹10,000 / एकड़")
+    .replace(/₹1,20,000 Grant/gi, "₹1,20,000 अनुदान")
+    .replace(/100 Days Guaranteed Wage Employment/gi, "100 दिन गारंटीकृत मजदूरी")
+    .replace(/Free Soil Testing & Advisory/gi, "निःशुल्क मृदा परीक्षण एवं सलाह")
+    .replace(/₹15,000 \/ year incentive/gi, "₹15,000 / वर्ष प्रोत्साहन")
+    .replace(/0% Middleman Commission/gi, "0% बिचौलिया कमीशन")
+    .replace(/Up to ₹10 Lakh Collateral-Free/gi, "₹10 लाख तक संपार्श्विक-मुक्त")
+    .replace(/80% Drone Cost Subsidy/gi, "80% ड्रोन लागत सब्सिडी")
+    .replace(/₹2 Lakh Death & Disability Cover/gi, "₹2 लाख मृत्यु एवं विकलांगता बीमा");
+}
+
+function translateTarget(text) {
+  if (!text) return "";
+  const map = {
+    "All landholding farmer families": "सभी भूमिधारक किसान परिवार",
+    "Small and marginal farmers (18-40 years)": "लघु एवं सीमांत किसान (18-40 वर्ष)",
+    "Small and marginal farmers (18-40 years old)": "लघु एवं सीमांत किसान (18-40 वर्ष)",
+    "All farmers growing notified crops in notified areas": "अधिसूचित क्षेत्रों में अधिसूचित फसल उगाने वाले सभी किसान",
+    "All farmers, tenant farmers, sharecroppers, SHGs, JLGs": "सभी किसान, काश्तकार, बटाईदार, एसएचजी, जेएलजी",
+    "All short-term crop loan borrowers under KCC": "केसीसी के तहत सभी अल्पावधि फसल ऋण धारक",
+    "Farmers, Panchayats, Cooperatives, FPOs": "किसान, पंचायतें, सहकारी समितियां, एफपीओ",
+    "All farmers across India": "अखिल भारतीय स्तर पर सभी किसान",
+    "Individual farmers, SHGs, FPOs, Cooperatives": "व्यक्तिगत किसान, स्वयं सहायता समूह, एफपीओ, सहकारी समितियां",
+    "All farmers practicing or transitioning to natural farming": "प्राकृतिक खेती अपनाने वाले या करने वाले सभी किसान",
+    "All farmers with APMC tradeable produce": "मंडी व्यापार योग्य उपज वाले सभी किसान",
+    "Farmers growing MSP-notified oilseeds, pulses, and copra": "एमएसपी अधिसूचित तिलहन, दलहन व खोपरा उत्पादक किसान",
+    "Small & marginal farmers, SC/ST, women, FPOs, Custom Hiring Centers": "लघु व सीमांत किसान, अजा/अजजा, महिलाएं, एफपीओ, कस्टम हायरिंग सेंटर",
+    "Women SHGs, Rural Women": "महिला स्वयं सहायता समूह, ग्रामीण महिलाएं",
+    "All farmers registered on AgriStack": "एग्रीस्टैक पर पंजीकृत सभी किसान",
+    "Horticulture farmers, FPOs, entrepreneurs": "बागवानी किसान, एफपीओ, कृषि उद्यमी",
+    "Beekeepers, farmers, SHGs, FPOs": "मधुमक्खी पालक, किसान, एसएचजी, एफपीओ",
+    "Dairy farmers, cattle rearers, breed organizations": "डेयरी किसान, पशुपालक, नस्ल संगठन",
+    "Individual farmers, SHGs, FPOs, private entrepreneurs": "व्यक्तिगत किसान, एसएचजी, एफपीओ, निजी उद्यमी",
+    "Fishers, Fish Farmers, Self Help Groups, Cooperatives": "मछुआरे, मत्स्य पालक, स्वयं सहायता समूह, सहकारी समितियां",
+    "Small and marginal farmers, individual entrepreneurs, cooperatives": "लघु व सीमांत किसान, व्यक्तिगत उद्यमी, सहकारी समितियां",
+    "Micro food processing enterprises, SHGs, FPOs, individual farmers": "सूक्ष्म खाद्य प्रसंस्करण उद्यम, एसएचजी, एफपीओ, व्यक्तिगत किसान",
+    "Farmers, agripreneurs, startups": "किसान, कृषि उद्यमी, स्टार्टअप्स",
+    "Farmers in identified clusters": "पहचाने गए क्लस्टर के किसान",
+    "Rural job seekers with MGNREGA Job Card": "मनरेगा जॉब कार्ड धारक ग्रामीण नागरिक",
+    "Homeless or kutcha house rural households": "बेघर या कच्चे घर वाले ग्रामीण परिवार",
+    "Farmers, extension workers, farmer groups": "किसान, विस्तार कार्यकर्ता, किसान समूह",
+    "All farmers in district": "जिले के समस्त किसान",
+    "Rural women SHG members": "ग्रामीण महिला एसएचजी सदस्य"
+  };
+  return map[text] || text;
+}
+
+
 let currentSpeechUtterance = null;
 
 // DOM Initialization
+
+// Deeplink handler for ?scheme=id or ?id=scheme-id
+function handleSchemeUrlParam() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const schemeId = urlParams.get('scheme') || urlParams.get('id');
+  if (schemeId) {
+    setTimeout(() => {
+      openSchemeDetail(schemeId);
+    }, 250);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   handleLegacyDeepLinks();
   highlightActiveSideNav();
@@ -140,6 +669,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initEventListeners();
   updateSavedBadgeCount();
   renderDashboardKanban();
+  handleSchemeUrlParam();
 });
 
 // Hamburger Drawer Navigation Controller
@@ -262,6 +792,7 @@ async function syncUserDataIfLoggedIn() {
 // Initialize Language
 function initLanguage() {
   const lang = AppState.currentLang;
+  document.documentElement.lang = lang;
   document.body.classList.toggle("lang-hi", lang === 'hi');
   const langToggleBtn = document.getElementById("langToggleBtn");
   if (langToggleBtn) {
@@ -279,20 +810,104 @@ function toggleLanguage() {
   renderCategoryChips();
   renderSchemesCatalog();
   renderDashboardKanban();
+  renderCSCLocations();
+  renderCompareMatrixPage();
+  updateCompareStickyBar();
+  if (typeof initAuthNav === 'function') initAuthNav();
+
+  // If scheme modal is open, re-render it in new language
+  const modal = document.getElementById("schemeDetailModal");
+  if (modal && modal.classList.contains("active")) {
+    const codeEl = document.getElementById("modalSchemeCode");
+    if (codeEl && codeEl.textContent) {
+      const currentScheme = SCHEMES_DATA.find(x => x.code === codeEl.textContent.trim());
+      if (currentScheme) openSchemeDetail(currentScheme.id);
+    }
+  }
 }
 
 function applyTranslations() {
-  const t = TRANSLATIONS[AppState.currentLang];
+  const lang = AppState.currentLang;
+  const isHi = lang === 'hi';
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+  // 1. All elements with [data-i18n]
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
-    if (t[key]) {
-      if (el.tagName === 'INPUT' && el.getAttribute('placeholder')) {
+    if (t[key] !== undefined) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         el.setAttribute('placeholder', t[key]);
+      } else if (t[key].includes('<') && t[key].includes('>')) {
+        el.innerHTML = t[key];
       } else {
         el.textContent = t[key];
       }
     }
   });
+
+  // 2. Placeholders
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
+  });
+
+  // 3. Titles
+  document.querySelectorAll("[data-i18n-title]").forEach(el => {
+    const key = el.getAttribute("data-i18n-title");
+    if (t[key] !== undefined) el.setAttribute('title', t[key]);
+  });
+
+  // 4. Known Inputs & Placeholders
+  const heroSearchInput = document.getElementById("heroSearchInput");
+  if (heroSearchInput) heroSearchInput.placeholder = t.searchPlaceholder;
+  const subSearchInput = document.getElementById("subSearchInput");
+  if (subSearchInput) subSearchInput.placeholder = t.catalogSearchPlaceholder;
+  const locatorSearchInput = document.getElementById("locatorSearchInput");
+  if (locatorSearchInput) locatorSearchInput.placeholder = t.locatorSearchPlaceholder;
+  const aiInputField = document.getElementById("aiInputField");
+  if (aiInputField) aiInputField.placeholder = t.aiPlaceholder;
+
+  // 5. Filter Dropdown Options
+  const authFilter = document.getElementById("authorityFilter");
+  if (authFilter && authFilter.options && authFilter.options.length >= 3) {
+    authFilter.options[0].textContent = t.filterAllAuth;
+    authFilter.options[1].textContent = t.filterCentral;
+    authFilter.options[2].textContent = t.filterNgo;
+  }
+  const sortFilter = document.getElementById("sortByFilter");
+  if (sortFilter && sortFilter.options && sortFilter.options.length >= 3) {
+    sortFilter.options[0].textContent = t.sortRelevant;
+    sortFilter.options[1].textContent = t.sortSubsidy;
+    sortFilter.options[2].textContent = t.sortClosing;
+  }
+
+  // 6. Hero Mini Wizard Options
+  const heroLandSelect = document.getElementById("heroLandSelect");
+  if (heroLandSelect && heroLandSelect.options && heroLandSelect.options.length >= 4) {
+    heroLandSelect.options[0].textContent = t.optMarginal;
+    heroLandSelect.options[1].textContent = t.optSmall;
+    heroLandSelect.options[2].textContent = t.optMedium;
+    heroLandSelect.options[3].textContent = t.optLarge;
+  }
+  const heroFocusSelect = document.getElementById("heroFocusSelect");
+  if (heroFocusSelect && heroFocusSelect.options && heroFocusSelect.options.length >= 5) {
+    heroFocusSelect.options[0].textContent = t.optIncome;
+    heroFocusSelect.options[1].textContent = t.optInsurance;
+    heroFocusSelect.options[2].textContent = t.optIrrigation;
+    heroFocusSelect.options[3].textContent = t.optMechanization;
+    heroFocusSelect.options[4].textContent = t.optCredit;
+  }
+
+  // 7. AI Assistant Quick Chips & Subtitle
+  const aiSubtitle = document.querySelector(".ai-header-text span");
+  if (aiSubtitle) aiSubtitle.textContent = t.aiGroundedBadge;
+  const aiChips = document.querySelectorAll(".ai-quick-chips .ai-chip");
+  if (aiChips && aiChips.length >= 4) {
+    aiChips[0].textContent = t.aiChipPmkisan;
+    aiChips[1].textContent = t.aiChipKcc;
+    aiChips[2].textContent = t.aiChipSolar;
+    aiChips[3].textContent = t.aiChipSaved;
+  }
 }
 
 // Render Category Filter Chips
@@ -358,7 +973,9 @@ function renderSchemesCatalog() {
   }
 
   if (countEl) {
-    countEl.innerHTML = `Showing <strong>${filtered.length}</strong> verified schemes`;
+    countEl.innerHTML = isHi 
+      ? `<strong>${filtered.length}</strong> सत्यापित योजनाएं प्रदर्शित`
+      : `Showing <strong>${filtered.length}</strong> verified schemes`;
   }
 
   if (filtered.length === 0) {
@@ -378,9 +995,26 @@ function renderSchemesCatalog() {
     return;
   }
 
+  const badgeHiMap = {
+    "Direct Benefit Transfer": "प्रत्यक्ष लाभ (DBT)",
+    "Up to 80% Subsidy": "80% तक अनुदान",
+    "4% Concessional Interest": "4% रियायती ब्याज",
+    "100% Centrally Funded": "100% केंद्र पोषित",
+    "Interest Subvention": "ब्याज अनुदान",
+    "60% Capital Subsidy": "60% पूंजी अनुदान",
+    "Priority Approval": "प्राथमिकता स्वीकृति",
+    "Closing Soon": "समाप्ति शीघ्र",
+    "PBL Prototype": "सत्यापित योजना"
+  };
+
   grid.innerHTML = filtered.map(scheme => {
     const isSaved = AppState.savedSchemeIds.includes(scheme.id);
     const isCompared = AppState.compareSchemeIds.includes(scheme.id);
+    const badgeText = isHi ? (badgeHiMap[scheme.badge] || scheme.badge) : scheme.badge;
+    const targetUrl = scheme.officialUrl || scheme.applyUrl || "https://agriwelfare.gov.in";
+    const primaryDoc = (scheme.officialDocuments && scheme.officialDocuments.length > 0)
+      ? scheme.officialDocuments[0]
+      : { url: scheme.sourceUrl || targetUrl, title: scheme.name + " Proof Guidelines" };
 
     return `
       <div class="scheme-card" id="scheme-card-${scheme.id}">
@@ -388,10 +1022,10 @@ function renderSchemesCatalog() {
           <span class="scheme-code-badge">${scheme.code}</span>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="badge-pill ${scheme.badge.includes('Closing') ? 'priority' : (scheme.badge.includes('DBT') ? 'dbt' : 'general')}">
-              ${scheme.badge}
+              ${badgeText}
             </span>
             <button class="bookmark-btn ${isSaved ? 'saved' : ''}" 
-                    title="${isSaved ? 'Remove from saved' : 'Save scheme'}"
+                    title="${isSaved ? (isHi ? 'सहेजी गई सूची से हटाएं' : 'Remove from saved') : (isHi ? 'योजना सहेजें' : 'Save scheme')}"
                     onclick="toggleSaveScheme('${scheme.id}', event)">
               ${isSaved ? '❤️' : '🤍'}
             </button>
@@ -412,22 +1046,20 @@ function renderSchemesCatalog() {
 
         <div class="subsidy-box">
           <div class="subsidy-label">${isHi ? "मुख्य लाभ / अनुदान" : "Key Subsidy Benefit"}</div>
-          <div class="subsidy-value">${scheme.subsidyHighlight}</div>
+          <div class="subsidy-value">${isHi ? translateSubsidy(scheme.subsidyHighlight) : scheme.subsidyHighlight}</div>
         </div>
 
         <div class="card-footer">
           <button class="card-view-btn" onclick="openSchemeDetail('${scheme.id}')">
-            <span>${isHi ? "विवरण व प्रक्रिया" : "View Steps & Guide"}</span> →
+            <span>${isHi ? "विवरण व प्रक्रिया" : "View Steps"}</span> →
           </button>
-          ${scheme.applyUrl 
-            ? `<a href="${scheme.applyUrl}" target="_blank" rel="noopener noreferrer" class="card-apply-btn" onclick="event.stopPropagation()" title="${isHi ? 'सीधे आवेदन करें' : 'Apply / Register Directly'}">
-                <span>${isHi ? 'आवेदन करें ↗' : 'Apply ↗'}</span>
-              </a>`
-            : `<span class="card-apply-offline" title="${isHi ? 'सीएससी केंद्र पर ऑफलाइन आवेदन करें' : 'Apply offline via nearest CSC center'}">
-                ${isHi ? 'ऑफलाइन (CSC)' : 'Offline (CSC)'}
-              </span>`
-          }
-          <label class="card-compare-chk" title="Compare side by side">
+          <a href="${primaryDoc.url}" target="_blank" rel="noopener noreferrer" class="card-proof-btn" onclick="event.stopPropagation()" title="${isHi ? 'आधिकारिक प्रमाण दिशानिर्देश देखें: ' + primaryDoc.title : 'View Official Proof Guidelines: ' + primaryDoc.title}">
+            <span>📄 ${isHi ? 'दिशानिर्देश ↗' : 'Guidelines ↗'}</span>
+          </a>
+          <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="card-apply-btn" onclick="event.stopPropagation()" title="${isHi ? 'आधिकारिक पोर्टल पर सीधे आवेदन करें' : 'Apply Directly on Official Portal'}">
+            <span>${isHi ? 'आवेदन ↗' : 'Apply ↗'}</span>
+          </a>
+          <label class="card-compare-chk" title="${isHi ? 'आमने-सामने तुलना करें' : 'Compare side by side'}">
             <input type="checkbox" ${isCompared ? 'checked' : ''} 
                    onchange="toggleCompareScheme('${scheme.id}', this.checked)">
             <span>${isHi ? "तुलना" : "Compare"}</span>
@@ -460,8 +1092,9 @@ async function toggleSaveScheme(schemeId, event) {
       ? "योजनाओं को सहेजने और अपने डैशबोर्ड पर आवेदन ट्रैक करने के लिए कृपया लॉगिन करें। क्या आप लॉगिन पृष्ठ पर जाना चाहते हैं?" 
       : "Please sign in to save schemes and manage application milestones in your Dashboard. Would you like to log in now?");
     if (proceed) {
-      const currentPage = encodeURIComponent(window.location.pathname.split("/").pop() || "index.html");
-      window.location.href = `login.html?next=${currentPage}&action=save&scheme=${schemeId}`;
+      const pageBase = window.location.pathname.split("/").pop() || "index.html";
+      const nextUrl = encodeURIComponent(`${pageBase}?scheme=${schemeId}`);
+      window.location.href = `login.html?next=${nextUrl}&action=save&scheme=${schemeId}`;
       return;
     }
   }
@@ -578,7 +1211,7 @@ function openCompareModal() {
         </tr>
         <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
           <td style="padding: 12px; font-weight: 600;">Subsidy / Benefit</td>
-          ${schemes.map(s => `<td style="padding: 12px; font-family: var(--font-mono); font-weight: 700; color: var(--color-primary);">${s.subsidyHighlight}</td>`).join('')}
+          ${schemes.map(s => `<td style="padding: 12px; font-family: var(--font-mono); font-weight: 700; color: var(--color-primary);">${isHi ? translateSubsidy(s.subsidyHighlight) : s.subsidyHighlight}</td>`).join('')}
         </tr>
         <tr style="border-bottom: 1px solid var(--color-surface-border);">
           <td style="padding: 12px; font-weight: 600;">Eligible Land Holding</td>
@@ -586,18 +1219,31 @@ function openCompareModal() {
         </tr>
         <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
           <td style="padding: 12px; font-weight: 600;">Target Farmers</td>
-          ${schemes.map(s => `<td style="padding: 12px;">${s.targetBeneficiary}</td>`).join('')}
+          ${schemes.map(s => `<td style="padding: 12px;">${isHi ? translateTarget(s.targetBeneficiary) : s.targetBeneficiary}</td>`).join('')}
         </tr>
         <tr style="border-bottom: 1px solid var(--color-surface-border);">
           <td style="padding: 12px; font-weight: 600;">Required Documents</td>
           ${schemes.map(s => `<td style="padding: 12px;"><ul style="padding-left: 16px;">${s.documents.map(d => `<li>${d}</li>`).join('')}</ul></td>`).join('')}
         </tr>
+        <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
+          <td style="padding: 12px; font-weight: 600;">${isHi ? 'प्रमाण दिशानिर्देश' : 'Proof Guidelines'}</td>
+          ${schemes.map(s => {
+            const doc = (s.officialDocuments && s.officialDocuments.length > 0) ? s.officialDocuments[0] : null;
+            return doc ? `
+              <td style="padding: 12px;">
+                <a href="${doc.url}" target="_blank" rel="noopener noreferrer" class="card-proof-btn" style="text-decoration: none;">
+                  📄 ${isHi ? 'दिशानिर्देश ↗' : 'Guidelines ↗'}
+                </a>
+              </td>
+            ` : `<td style="padding: 12px;">-</td>`;
+          }).join('')}
+        </tr>
         <tr>
-          <td style="padding: 12px; font-weight: 600;">Apply Link</td>
+          <td style="padding: 12px; font-weight: 600;">${isHi ? 'आवेदन लिंक' : 'Apply Link'}</td>
           ${schemes.map(s => `
             <td style="padding: 12px;">
               <a href="${s.officialUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: 0.75rem; padding: 6px 12px;">
-                Official Portal ↗
+                ${isHi ? 'पोर्टल ↗' : 'Official Portal ↗'}
               </a>
             </td>
           `).join('')}
@@ -620,8 +1266,23 @@ function openSchemeDetail(schemeId) {
   if (!scheme) return;
 
   const modal = document.getElementById("schemeDetailModal");
+  if (!modal) return;
   const isHi = AppState.currentLang === 'hi';
   const isSaved = AppState.savedSchemeIds.includes(scheme.id);
+  const targetUrl = scheme.officialUrl || scheme.applyUrl || "https://agriwelfare.gov.in";
+
+  // Translate modal static titles
+  const modalSubLabel = modal.querySelector(".subsidy-label");
+  if (modalSubLabel) modalSubLabel.textContent = isHi ? "मुख्य सब्सिडी / वित्तीय लाभ" : "Key Subsidy / Financial Benefit";
+  
+  const sectionTitles = modal.querySelectorAll(".detail-section-title");
+  if (sectionTitles.length >= 4) {
+    sectionTitles[0].textContent = isHi ? "✨ मुख्य लाभ" : "✨ Key Benefits";
+    sectionTitles[1].textContent = isHi ? "🎯 कौन पात्र है? (पात्रता आवश्यकताएं)" : "🎯 Who is Eligible? (Requirements)";
+    sectionTitles[2].textContent = isHi ? "📋 आवश्यक दस्तावेज़ चेकलिस्ट" : "📋 Required Documents Checklist";
+    sectionTitles[3].textContent = isHi ? "🚀 चरण-दर-चरण आवेदन प्रक्रिया (आवेदन कैसे करें)" : "🚀 Step-by-Step Application Procedure (How to Apply)";
+    if (sectionTitles[4]) sectionTitles[4].textContent = isHi ? "📄 आधिकारिक दस्तावेज़ एवं दिशानिर्देश" : "📄 Official Documents & Proof Guidelines";
+  }
 
   // Populate header
   document.getElementById("modalSchemeCode").textContent = scheme.code;
@@ -630,93 +1291,130 @@ function openSchemeDetail(schemeId) {
 
   // Overview
   document.getElementById("modalSchemeTagline").textContent = isHi ? scheme.taglineHi : scheme.tagline;
-  document.getElementById("modalSubsidyHighlight").textContent = scheme.subsidyHighlight;
-  document.getElementById("modalTargetBeneficiary").textContent = scheme.targetBeneficiary;
+  document.getElementById("modalSubsidyHighlight").textContent = isHi ? (scheme.subsidyHighlightHi || translateSubsidy(scheme.subsidyHighlight)) : scheme.subsidyHighlight;
+  document.getElementById("modalTargetBeneficiary").textContent = isHi ? (scheme.targetBeneficiaryHi || translateTarget(scheme.targetBeneficiary)) : scheme.targetBeneficiary;
 
   // Benefits
   const benefitsList = document.getElementById("modalBenefitsList");
-  benefitsList.innerHTML = scheme.benefits.map(b => `
-    <li style="margin-bottom: 8px; color: var(--color-ink-muted);">
-      <strong style="color: var(--color-primary);">✓</strong> ${b}
-    </li>
-  `).join('');
+  if (benefitsList) {
+    const benItems = (isHi && scheme.benefitsHi && scheme.benefitsHi.length) ? scheme.benefitsHi : scheme.benefits;
+    benefitsList.innerHTML = benItems.map(b => `
+      <li style="margin-bottom: 8px; color: var(--color-ink-muted); line-height: 1.6;">
+        <strong style="color: var(--color-primary);">✓</strong> ${b}
+      </li>
+    `).join('');
+  }
 
-  // Eligibility
+  // Eligibility / Requirements
   const eligList = document.getElementById("modalEligibilityList");
-  eligList.innerHTML = scheme.eligibility.map(e => `
-    <li style="margin-bottom: 8px; color: var(--color-ink-muted);">
-      <strong style="color: var(--color-primary);">•</strong> ${e}
-    </li>
-  `).join('');
+  if (eligList) {
+    const eligItems = (isHi && scheme.eligibilityHi && scheme.eligibilityHi.length) ? scheme.eligibilityHi : scheme.eligibility;
+    eligList.innerHTML = eligItems.map(e => `
+      <li style="margin-bottom: 8px; color: var(--color-ink-muted); line-height: 1.6;">
+        <strong style="color: var(--color-primary);">•</strong> ${e}
+      </li>
+    `).join('');
+  }
 
-  // Required Documents (Interactive checklist)
+  // Required Documents (Interactive checklist with Hindi mapping)
   const docsList = document.getElementById("modalDocumentsList");
-  docsList.innerHTML = scheme.documents.map((doc, idx) => `
-    <label class="doc-check-item">
-      <input type="checkbox" id="doc_check_${idx}">
-      <span>${doc}</span>
-    </label>
-  `).join('');
+  if (docsList) {
+    const docItems = (isHi && scheme.documentsHi && scheme.documentsHi.length)
+      ? scheme.documentsHi
+      : scheme.documents.map((doc) => isHi ? (DOCS_HI_MAP[doc] || doc) : doc);
+    docsList.innerHTML = docItems.map((docText, idx) => `
+      <label class="doc-check-item">
+        <input type="checkbox" id="doc_check_${idx}">
+        <span>${docText}</span>
+      </label>
+    `).join('');
+  }
 
-  // Step-by-Step Procedure Timeline (Key Differentiator!)
+  // Step-by-Step Procedure Timeline
   const procTimeline = document.getElementById("modalProcedureTimeline");
-  procTimeline.innerHTML = scheme.procedure.map(p => `
-    <div class="procedure-step-item">
-      <div class="procedure-step-badge">${p.step}</div>
-      <div class="procedure-step-content">
-        <h5>${p.title}</h5>
-        <p>${p.desc}</p>
+  if (procTimeline) {
+    const procSteps = (isHi && scheme.procedureHi && scheme.procedureHi.length) ? scheme.procedureHi : scheme.procedure;
+    procTimeline.innerHTML = procSteps.map(p => `
+      <div class="procedure-step-item">
+        <div class="procedure-step-badge">${isHi ? 'चरण ' + p.step : 'Step ' + p.step}</div>
+        <div class="procedure-step-content">
+          <h5>${p.title}</h5>
+          <p style="line-height: 1.55;">${p.desc}</p>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 
   // Trust Verification Line
-  document.getElementById("modalLastVerified").textContent = `Verified: ${scheme.lastVerified}`;
-  const officialLink = document.getElementById("modalOfficialLink");
-  officialLink.href = scheme.officialUrl;
+  const lastVerEl = document.getElementById("modalLastVerified");
+  if (lastVerEl) lastVerEl.textContent = `${isHi ? 'सत्यापित:' : 'Verified:'} ${scheme.lastVerified}`;
 
-  // Apply / Register Directly button
+  // Apply on Official Portal Link (Always redirects to working official scheme portal)
+  const officialLink = document.getElementById("modalOfficialLink");
+  if (officialLink) {
+    officialLink.href = targetUrl;
+    officialLink.target = "_blank";
+    officialLink.rel = "noopener noreferrer";
+    officialLink.innerHTML = isHi ? '<span>आधिकारिक पोर्टल पर आवेदन करें ↗</span>' : '<span>Apply on Official Portal ↗</span>';
+  }
+
+  // Primary Proof Guidelines Document
+  const primaryDoc = (scheme.officialDocuments && scheme.officialDocuments.length > 0)
+    ? scheme.officialDocuments[0]
+    : { url: scheme.sourceUrl || targetUrl, title: scheme.name + " Proof Guidelines", source: scheme.issuingBody, year: "2026" };
+
+  // Setup direct Proof Guidelines button in modal action bar
+  const proofDocLink = document.getElementById('modalProofDocLink');
+  if (proofDocLink) {
+    proofDocLink.href = primaryDoc.url;
+    proofDocLink.target = "_blank";
+    proofDocLink.rel = "noopener noreferrer";
+    proofDocLink.style.display = "inline-flex";
+    proofDocLink.innerHTML = `📄 <span>${isHi ? 'प्रमाण दिशानिर्देश ↗' : 'Proof Guidelines ↗'}</span>`;
+    proofDocLink.title = isHi ? `आधिकारिक प्रमाण दिशानिर्देश देखें: ${primaryDoc.title}` : `View Official Proof Guidelines: ${primaryDoc.title}`;
+  }
+
+  // Apply / Register Directly container (if present in markup)
   const applyContainer = document.getElementById('modalApplyBtnContainer');
   if (applyContainer) {
-    if (scheme.applyUrl) {
-      applyContainer.innerHTML = `
-        <a href="${scheme.applyUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-accent" style="font-size: 0.9rem; padding: 10px 18px;">
-          ${isHi ? '📝 सीधे आवेदन / पंजीकरण करें ↗' : '📝 Apply / Register Directly ↗'}
-        </a>`;
-    } else {
-      applyContainer.innerHTML = `
-        <div style="background: var(--color-warning-bg); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; color: var(--color-warning);">
-          ${isHi ? '⚠️ इस योजना के लिए निकटतम सीएससी / केवीके केंद्र पर जाकर ऑफलाइन आवेदन करें।' : '⚠️ This scheme requires offline application via your nearest CSC / KVK center.'}
-          <a href="locator.html" style="color: var(--color-primary); font-weight: 600; margin-left: 6px;">${isHi ? 'केंद्र खोजें →' : 'Find Center →'}</a>
-        </div>`;
-    }
+    applyContainer.innerHTML = `
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-accent" style="font-size: 0.875rem; padding: 9px 16px; display: inline-flex; align-items: center; gap: 6px;">
+          ${isHi ? '📝 आधिकारिक पोर्टल पर आवेदन करें ↗' : '📝 Apply on Official Portal ↗'}
+        </a>
+        <a href="${primaryDoc.url}" target="_blank" rel="noopener noreferrer" class="btn-outline" style="font-size: 0.875rem; padding: 9px 16px; display: inline-flex; align-items: center; gap: 6px; border-color: var(--color-primary); color: var(--color-primary); font-weight: 600;">
+          ${isHi ? '📄 दिशानिर्देश PDF देखें ↗' : '📄 Guidelines PDF ↗'}
+        </a>
+      </div>`;
   }
 
   // Official Documents / Proof Guidelines
   const docsSection = document.getElementById('modalOfficialDocsSection');
   const officialDocsList = document.getElementById('modalOfficialDocsList');
-  if (docsSection && officialDocsList && scheme.officialDocuments && scheme.officialDocuments.length > 0) {
+  if (docsSection && officialDocsList) {
+    const docs = (scheme.officialDocuments && scheme.officialDocuments.length > 0)
+      ? scheme.officialDocuments
+      : [primaryDoc];
     docsSection.style.display = 'block';
-    officialDocsList.innerHTML = scheme.officialDocuments.map(doc => `
+    officialDocsList.innerHTML = docs.map(doc => `
       <a href="${doc.url}" target="_blank" rel="noopener noreferrer" class="official-doc-card">
         <div class="doc-icon">📄</div>
         <div class="doc-info">
           <div class="doc-title">${doc.title}</div>
-          <div class="doc-meta">${doc.source} · ${doc.year}</div>
+          <div class="doc-meta">${doc.source} · ${doc.year} · <strong style="color: var(--color-primary);">${isHi ? 'आधिकारिक दिशानिर्देश खोलें ↗' : 'View Official Guidelines ↗'}</strong></div>
         </div>
         <span class="doc-open-icon">↗</span>
       </a>
     `).join('');
-  } else if (docsSection) {
-    docsSection.style.display = 'none';
   }
+
   // Bookmark Button in Modal
   const modalSaveBtn = document.getElementById("modalSaveBtn");
   if (modalSaveBtn) {
     modalSaveBtn.innerHTML = isSaved ? `❤️ ${isHi ? "सहेजा गया" : "Saved"}` : `🤍 ${isHi ? "सहेजें" : "Save Scheme"}`;
     modalSaveBtn.onclick = () => {
       toggleSaveScheme(scheme.id);
-      openSchemeDetail(scheme.id); // re-render state
+      openSchemeDetail(scheme.id);
     };
   }
 
@@ -731,12 +1429,14 @@ function openSchemeDetail(schemeId) {
   // Setup Print Checklist Button
   const printBtn = document.getElementById("modalPrintChecklistBtn");
   if (printBtn) {
+    printBtn.innerHTML = `🖨️ <span>${isHi ? "चेकलिस्ट प्रिंट करें" : "Print Checklist"}</span>`;
     printBtn.onclick = () => printSchemeChecklist(scheme);
   }
 
   // Setup "Ask AI about this scheme" shortcut
   const askAiBtn = document.getElementById("modalAskAiBtn");
   if (askAiBtn) {
+    askAiBtn.innerHTML = `🤖 <span>${isHi ? "AI सहायक से पूछें" : "Ask AI Assistant"}</span>`;
     askAiBtn.onclick = () => {
       closeSchemeModal();
       if (window.KrishiAI) {
@@ -775,9 +1475,13 @@ function toggleTextToSpeech(scheme) {
     return;
   }
 
+  const docList = (isHi && scheme.documentsHi) ? scheme.documentsHi : scheme.documents.map(d => isHi ? (DOCS_HI_MAP[d] || d) : d);
+  const procList = (isHi && scheme.procedureHi) ? scheme.procedureHi : scheme.procedure;
+  const subsidyText = isHi ? (scheme.subsidyHighlightHi || translateSubsidy(scheme.subsidyHighlight)) : scheme.subsidyHighlight;
+
   const textToRead = isHi
-    ? `${scheme.nameHi}। ${scheme.taglineHi}। सब्सिडी लाभ: ${scheme.subsidyHighlight}। आवश्यक दस्तावेज़ हैं: ${scheme.documents.join(", ")}। आवेदन करने के चरण: ${scheme.procedure.map(p => p.title).join("। ")}।`
-    : `${scheme.name}. ${scheme.tagline}. Key benefit: ${scheme.subsidyHighlight}. Required documents are: ${scheme.documents.join(", ")}. Step by step application procedure: ${scheme.procedure.map(p => p.title).join(". ")}.`;
+    ? `${scheme.nameHi}। ${scheme.taglineHi}। मुख्य लाभ: ${subsidyText}। आवश्यक दस्तावेज़: ${docList.slice(0, 4).join(", ")}। आवेदन के चरण: ${procList.map(p => p.title).join("। ")}।`
+    : `${scheme.name}. ${scheme.tagline}. Key benefit: ${scheme.subsidyHighlight}. Required documents: ${scheme.documents.slice(0, 4).join(", ")}. Step by step application procedure: ${scheme.procedure.map(p => p.title).join(". ")}.`;
 
   const utterance = new SpeechSynthesisUtterance(textToRead);
   utterance.lang = isHi ? 'hi-IN' : 'en-IN';
@@ -804,27 +1508,31 @@ function toggleTextToSpeech(scheme) {
 function printSchemeChecklist(scheme) {
   const printWindow = window.open('', '_blank');
   const isHi = AppState.currentLang === 'hi';
+  const docItems = (isHi && scheme.documentsHi) ? scheme.documentsHi : scheme.documents.map(d => isHi ? (DOCS_HI_MAP[d] || d) : d);
+  const schemeTitle = isHi ? scheme.nameHi : scheme.name;
+  const portalUrl = scheme.officialUrl || scheme.applyUrl || "";
 
   printWindow.document.write(`
     <!DOCTYPE html>
-    <html>
+    <html lang="${isHi ? 'hi' : 'en'}">
     <head>
-      <title>Document Checklist - ${scheme.name}</title>
+      <meta charset="UTF-8">
+      <title>${isHi ? 'दस्तावेज़ चेकलिस्ट' : 'Document Checklist'} - ${schemeTitle}</title>
       <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #1A1A17; }
-        h1 { color: #1F3B2C; margin-bottom: 4px; font-size: 24px; }
-        .sub { color: #7A5C3E; font-size: 14px; margin-bottom: 24px; }
-        .checklist-item { display: flex; align-items: center; margin-bottom: 14px; font-size: 16px; }
-        .box { width: 22px; height: 22px; border: 2px solid #1F3B2C; border-radius: 4px; margin-right: 14px; }
-        .footer { margin-top: 40px; font-size: 12px; color: #888; border-top: 1px solid #ddd; padding-top: 14px; }
+        h1 { color: #1F3B2C; margin-bottom: 4px; font-size: 22px; }
+        .sub { color: #7A5C3E; font-size: 13px; margin-bottom: 24px; }
+        .checklist-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 15px; }
+        .box { width: 20px; height: 20px; border: 2px solid #1F3B2C; border-radius: 4px; margin-right: 12px; flex-shrink: 0; }
+        .footer { margin-top: 36px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 12px; }
       </style>
     </head>
     <body>
-      <h1>${isHi ? scheme.nameHi : scheme.name}</h1>
-      <div class="sub">Official Portal Checklist · Generated via KrishiSetu (कृषि सेतु)</div>
-      <h3>${isHi ? "आवेदन हेतु आवश्यक दस्तावेज़ों की सूची:" : "Official Documents Verification Checklist:"}</h3>
-      <div style="margin-top: 20px;">
-        ${scheme.documents.map(d => `
+      <h1>${schemeTitle}</h1>
+      <div class="sub">${isHi ? "आधिकारिक दस्तावेज़ सत्यापन चेकलिस्ट · कृषि सेतु द्वारा जनरेटेड" : "Official Documents Verification Checklist · Generated via KrishiSetu"}</div>
+      <h3 style="margin-bottom: 16px;">${isHi ? "आवेदन हेतु आवश्यक दस्तावेज़ चेकलिस्ट:" : "Official Documents Verification Checklist:"}</h3>
+      <div style="margin-top: 16px;">
+        ${docItems.map(d => `
           <div class="checklist-item">
             <div class="box"></div>
             <span>${d}</span>
@@ -832,7 +1540,7 @@ function printSchemeChecklist(scheme) {
         `).join('')}
       </div>
       <div class="footer">
-        Official Application Portal: <strong>${scheme.officialUrl}</strong> | Last verified: ${scheme.lastVerified}
+        ${isHi ? "आधिकारिक आवेदन पोर्टल:" : "Official Application Portal:"} <strong>${portalUrl}</strong> | ${isHi ? "सत्यापित:" : "Last verified:"} ${scheme.lastVerified}
       </div>
       <script>
         window.onload = function() { window.print(); }
@@ -929,7 +1637,7 @@ function calculateEligibilityResults() {
     // Crop match
     if (wizardAnswers.cropType === 'horticulture' && s.category === 'Horticulture') {
       score += 10;
-      matchReasons.push("Matches your fruit/vegetable crop type");
+      matchReasons.push(isHi ? "आपकी फल/सब्जी फसल के अनुकूल है" : "Matches your fruit/vegetable crop type");
     } else if (s.category === 'Income Support & Pension') {
       score += 10;
     }
@@ -972,8 +1680,13 @@ function calculateEligibilityResults() {
             <strong>${isHi ? "पात्रता कारण: " : "Why you match: "}</strong> ${m.reasons.join(", ")}
           </p>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <div class="match-pct-badge">${m.score}% Match</div>
+          ${(m.scheme.officialDocuments && m.scheme.officialDocuments.length > 0) ? `
+            <a href="${m.scheme.officialDocuments[0].url}" target="_blank" rel="noopener noreferrer" class="card-proof-btn" style="text-decoration: none;" title="${m.scheme.officialDocuments[0].title}">
+              📄 ${isHi ? 'दिशानिर्देश ↗' : 'Guidelines ↗'}
+            </a>
+          ` : ''}
           <button class="card-view-btn" onclick="openSchemeDetail('${m.scheme.id}')">
             ${isHi ? "देखें" : "View"}
           </button>
@@ -1031,6 +1744,13 @@ function renderDashboardKanban() {
       </div>
       <div style="font-family: var(--font-mono); font-size: 0.775rem; color: var(--color-primary); font-weight: 600;">
         ${scheme.subsidyHighlight}
+      </div>
+      <div style="margin: 4px 0 6px;">
+        ${(scheme.officialDocuments && scheme.officialDocuments.length > 0) ? `
+          <a href="${scheme.officialDocuments[0].url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.72rem; color: var(--color-primary); text-decoration: underline; font-weight: 600; display: inline-flex; align-items: center; gap: 3px;" title="${scheme.officialDocuments[0].title}">
+            📄 ${isHi ? 'प्रमाण दिशानिर्देश ↗' : 'Proof Guidelines ↗'}
+          </a>
+        ` : ''}
       </div>
       <div class="kanban-item-actions">
         <select onchange="updateSchemeKanbanStatus('${scheme.id}', this.value)" style="font-size: 0.72rem; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--color-surface-border);">
@@ -1144,7 +1864,7 @@ function renderCSCLocations(filterType = "all", searchQuery = "") {
           📞 <a href="tel:${loc.contact.replace(/\s+/g, '')}" onclick="event.stopPropagation()" title="${isHi ? 'कॉल करें' : 'Call center'}">${loc.contact}</a>
         </div>
         <div class="locator-services-list">
-          ${loc.services.map(s => `<span class="service-pill">${s}</span>`).join('')}
+          ${loc.services.map(s => `<span class="service-pill">${isHi ? (SERVICES_HI_MAP[s] || s) : s}</span>`).join('')}
         </div>
       </div>
     `;
@@ -1234,7 +1954,7 @@ function renderCompareMatrixPage() {
       <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
         <thead>
           <tr style="background: #F4F1EA; border-bottom: 2px solid var(--color-surface-border);">
-            <th style="padding: 16px; width: 20%; color: var(--color-primary); font-size: 0.9375rem;">Parameter</th>
+            <th style="padding: 16px; width: 20%; color: var(--color-primary); font-size: 0.9375rem;">${isHi ? "मापदंड" : "Parameter"}</th>
             ${selectedSchemes.map(s => `
               <th style="padding: 16px; font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-primary);">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
@@ -1252,38 +1972,65 @@ function renderCompareMatrixPage() {
           </tr>
           <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "सब्सिडी / मुख्य लाभ" : "Subsidy / Benefit"}</td>
-            ${selectedSchemes.map(s => `<td style="padding: 14px 16px; font-family: var(--font-mono); font-weight: 700; color: var(--color-primary); font-size: 0.95rem;">${s.subsidyHighlight}</td>`).join('')}
+            ${selectedSchemes.map(s => `<td style="padding: 14px 16px; font-family: var(--font-mono); font-weight: 700; color: var(--color-primary); font-size: 0.95rem;">${isHi ? (s.subsidyHighlightHi || translateSubsidy(s.subsidyHighlight)) : s.subsidyHighlight}</td>`).join('')}
           </tr>
           <tr style="border-bottom: 1px solid var(--color-surface-border);">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "पात्र भूमि आकार" : "Eligible Landholding"}</td>
-            ${selectedSchemes.map(s => `<td style="padding: 14px 16px;">${s.minLand} - ${s.maxLand >= 999 ? (isHi ? 'कोई ऊपरी सीमा नहीं' : 'No upper limit') : s.maxLand + ' Hectares'}</td>`).join('')}
+            ${selectedSchemes.map(s => `<td style="padding: 14px 16px;">${s.minLand} - ${s.maxLand >= 999 ? (isHi ? 'कोई ऊपरी सीमा नहीं' : 'No upper limit') : s.maxLand + (isHi ? ' हेक्टेयर' : ' Hectares')}</td>`).join('')}
           </tr>
           <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "लक्षित लाभार्थी" : "Target Beneficiaries"}</td>
-            ${selectedSchemes.map(s => `<td style="padding: 14px 16px; color: var(--color-ink-muted);">${s.targetBeneficiary}</td>`).join('')}
+            ${selectedSchemes.map(s => `<td style="padding: 14px 16px; color: var(--color-ink-muted);">${isHi ? (s.targetBeneficiaryHi || translateTarget(s.targetBeneficiary)) : s.targetBeneficiary}</td>`).join('')}
           </tr>
           <tr style="border-bottom: 1px solid var(--color-surface-border);">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "आवश्यक दस्तावेज़" : "Required Documents"}</td>
-            ${selectedSchemes.map(s => `<td style="padding: 14px 16px;"><ul style="padding-left: 18px; margin: 0; color: var(--color-ink-muted);">${s.documents.map(d => `<li style="margin-bottom: 4px;">${d}</li>`).join('')}</ul></td>`).join('')}
+            ${selectedSchemes.map(s => {
+              const docs = (isHi && s.documentsHi) ? s.documentsHi : s.documents.map(d => isHi ? (DOCS_HI_MAP[d] || d) : d);
+              return `<td style="padding: 14px 16px;"><ul style="padding-left: 18px; margin: 0; color: var(--color-ink-muted);">${docs.map(d => `<li style="margin-bottom: 4px;">${d}</li>`).join('')}</ul></td>`;
+            }).join('')}
           </tr>
           <tr style="border-bottom: 1px solid var(--color-surface-border); background: #FAF8F2;">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "आवेदन के मुख्य चरण" : "Procedure Steps"}</td>
-            ${selectedSchemes.map(s => `<td style="padding: 14px 16px;"><ol style="padding-left: 18px; margin: 0; color: var(--color-ink-muted);">${s.procedure.slice(0, 3).map(p => `<li style="margin-bottom: 4px;"><strong>${p.title}:</strong> ${p.desc}</li>`).join('')}</ol></td>`).join('')}
+            ${selectedSchemes.map(s => {
+              const proc = (isHi && s.procedureHi) ? s.procedureHi : s.procedure;
+              return `<td style="padding: 14px 16px;"><ol style="padding-left: 18px; margin: 0; color: var(--color-ink-muted);">${proc.slice(0, 3).map(p => `<li style="margin-bottom: 4px;"><strong>${p.title}:</strong> ${p.desc}</li>`).join('')}</ol></td>`;
+            }).join('')}
           </tr>
-          <tr>
+          <tr style="border-bottom: 1px solid var(--color-surface-border);">
+            <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "प्रमाण दिशानिर्देश" : "Proof Guidelines"}</td>
+            ${selectedSchemes.map(s => {
+              const doc = (s.officialDocuments && s.officialDocuments.length > 0) ? s.officialDocuments[0] : null;
+              if (doc) {
+                return `<td style="padding: 14px 16px;">
+                  <a href="${doc.url}" target="_blank" rel="noopener noreferrer" class="card-proof-btn" style="text-decoration: none; padding: 7px 12px;" title="${doc.title}">
+                    📄 ${isHi ? 'दिशानिर्देश PDF ↗' : 'Guidelines PDF ↗'}
+                  </a>
+                </td>`;
+              }
+              return `<td style="padding: 14px 16px; color: var(--color-ink-muted);">-</td>`;
+            }).join('')}
+          </tr>
+          <tr style="background: #FAF8F2;">
             <td style="padding: 14px 16px; font-weight: 600; color: var(--color-ink);">${isHi ? "कार्रवाई" : "Actions"}</td>
-            ${selectedSchemes.map(s => `
+            ${selectedSchemes.map(s => {
+              const doc = (s.officialDocuments && s.officialDocuments.length > 0) ? s.officialDocuments[0] : null;
+              return `
               <td style="padding: 14px 16px;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button class="card-view-btn" onclick="openSchemeDetail('${s.id}')" style="font-size: 0.8125rem;">
                     ${isHi ? "विवरण देखें" : "View Details"}
                   </button>
+                  ${doc ? `
+                    <a href="${doc.url}" target="_blank" rel="noopener noreferrer" class="btn-outline" style="font-size: 0.8125rem; padding: 6px 10px; text-decoration: none; border-color: var(--color-primary); color: var(--color-primary); font-weight: 600;">
+                      📄 ${isHi ? "दिशानिर्देश ↗" : "Guidelines ↗"}
+                    </a>
+                  ` : ''}
                   <a href="${s.officialUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: 0.8125rem; padding: 7px 12px;">
                     ${isHi ? "पोर्टल ↗" : "Official Portal ↗"}
                   </a>
                 </div>
               </td>
-            `).join('')}
+            `;}).join('')}
           </tr>
         </tbody>
       </table>
@@ -1437,4 +2184,6 @@ window.renderCSCLocations = renderCSCLocations;
 window.highlightActiveSideNav = highlightActiveSideNav;
 window.initHamburgerMenu = initHamburgerMenu;
 window.initAuthNav = initAuthNav;
+window.TRANSLATIONS = TRANSLATIONS;
+window.applyTranslations = applyTranslations;
 

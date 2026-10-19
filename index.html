@@ -17,10 +17,10 @@
        ========================================================================== -->
   <header class="top-bar">
     <div class="top-bar-left">
-      <span>National Agricultural Welfare Information & Application Guidance Platform</span>
+      <span data-i18n="topBarTitle">National Agricultural Welfare Information & Application Guidance Platform</span>
     </div>
     <div class="top-bar-right">
-      <span>🛡️ Verified Data · Updated September 2026</span>
+      <span data-i18n="topBarVerified">🛡️ Verified Data · Updated September 2026</span>
       <button class="lang-toggle-btn" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language / भाषा बदलें">
         <span>🌐 English</span>
         <span class="lang-active-tag">EN</span>
@@ -49,14 +49,14 @@
 
     <div class="nav-actions">
       <a href="dashboard.html" class="btn-outline" title="View Saved Schemes">
-        <span>❤️ Saved</span>
+        <span data-i18n="navSaved">❤️ Saved</span>
         <span class="saved-count-badge" id="savedCountBadge">3</span>
       </a>
       <a href="eligibility.html" class="btn-primary">
-        <span>Check Eligibility</span>
+        <span data-i18n="navCheckEligibility">Check Eligibility</span>
       </a>
       <a href="login.html" class="btn-outline auth-login-btn" id="navLoginBtn">
-        <span>👤 Login</span>
+        <span data-i18n="navLogin">👤 Login</span>
       </a>
       <div class="auth-profile-chip" id="navProfileChip" style="display: none;">
         <button class="profile-chip-btn" id="profileChipBtn" title="Farmer Profile">
@@ -65,8 +65,8 @@
           <span class="chip-arrow">▾</span>
         </button>
         <div class="profile-dropdown" id="profileDropdown">
-          <a href="dashboard.html" class="dropdown-item">📊 My Dashboard</a>
-          <a href="#" class="dropdown-item" id="logoutBtn">🚪 Logout</a>
+          <a href="dashboard.html" class="dropdown-item" data-i18n="navMyDashboard">📊 My Dashboard</a>
+          <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="navLogout">🚪 Logout</a>
         </div>
       </div>
     </div>
@@ -126,8 +126,8 @@
         <div class="side-nav-help-card">
           <span style="font-size: 1.25rem;">🤖</span>
           <div>
-            <div style="font-weight: 600; color: var(--color-primary); font-size: 0.8125rem;">Krishi Mitra AI</div>
-            <div style="font-size: 0.72rem; color: var(--color-ink-faint);">24/7 Scheme Assistant</div>
+            <div style="font-weight: 600; color: var(--color-primary); font-size: 0.8125rem;" data-i18n="aiAssistantTitle">Krishi Mitra AI</div>
+            <div style="font-size: 0.72rem; color: var(--color-ink-faint);" data-i18n="aiAssistantSubtitle">24/7 Scheme Assistant</div>
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@
           <div class="hero-content">
             <div class="hero-badge-pill">
               <span class="pulse-dot"></span>
-              <span>Single-Window Farmer Welfare Access</span>
+              <span data-i18n="heroBadge">Single-Window Farmer Welfare Access</span>
             </div>
 
             <h1 class="hero-title" data-i18n="heroTitle">
@@ -167,9 +167,7 @@
               <input type="text" class="hero-search-input" id="heroSearchInput" 
                      placeholder="Search by scheme name, crop, subsidy, or keyword (e.g. PM-KISAN, drip, KCC, drone)..." 
                      autocomplete="off" data-i18n="searchPlaceholder">
-              <a href="schemes.html" class="btn-primary" style="display:inline-flex; align-items:center;">
-                Explore 36+ Schemes
-              </a>
+              <a href="schemes.html" class="btn-primary" style="display:inline-flex; align-items:center;" data-i18n="heroExploreBtn">Explore 36+ Schemes</a>
 
               <!-- Floating Autosuggest Results Dropdown -->
               <div class="search-autosuggest" id="heroAutoSuggest"></div>
@@ -196,12 +194,12 @@
           <div class="hero-interactive-card">
             <div class="card-top-header">
               <h3 data-i18n="quickCheckTitle">Instant Scheme Matcher</h3>
-              <span class="card-step-badge">2-Minute Check</span>
+              <span class="card-step-badge" data-i18n="quickCheckBadge">2-Minute Check</span>
             </div>
 
             <div class="hero-mini-wizard">
               <div class="mini-input-group">
-                <label>Your State / राज्य</label>
+                <label data-i18n="labelState">Your State / राज्य</label>
                 <select class="mini-select" id="heroStateSelect">
                   <option value="Madhya Pradesh">Madhya Pradesh (मध्य प्रदेश)</option>
                   <option value="Uttar Pradesh">Uttar Pradesh (उत्तर प्रदेश)</option>
@@ -215,7 +213,7 @@
               </div>
 
               <div class="mini-input-group">
-                <label>Cultivable Land Holding / भूमि आकार</label>
+                <label data-i18n="labelLand">Cultivable Land Holding / भूमि आकार</label>
                 <select class="mini-select" id="heroLandSelect">
                   <option value="marginal">Marginal Farmer (&lt; 2.5 Acres / &lt; 1 Ha)</option>
                   <option value="small" selected>Small Farmer (2.5 to 5 Acres / 1-2 Ha)</option>
@@ -225,7 +223,7 @@
               </div>
 
               <div class="mini-input-group">
-                <label>Primary Focus / मुख्य फसल या उद्देश्य</label>
+                <label data-i18n="labelFocus">Primary Focus / मुख्य फसल या उद्देश्य</label>
                 <select class="mini-select" id="heroFocusSelect">
                   <option value="income">Direct Income Support &amp; Pension</option>
                   <option value="insurance">Crop Insurance &amp; Weather Protection</option>
@@ -235,13 +233,11 @@
                 </select>
               </div>
 
-              <a href="eligibility.html" class="btn-primary btn-accent mini-wizard-btn" style="text-align:center; display:block;">
-                Find My Eligible Schemes →
-              </a>
+              <a href="eligibility.html" class="btn-primary btn-accent mini-wizard-btn" style="text-align:center; display:block;" data-i18n="findEligibleBtn">Find My Eligible Schemes →</a>
             </div>
 
             <div class="verified-trust-strip">
-              <span>🏛️ Direct hand-off to official government portals · No middlemen fees</span>
+              <span data-i18n="trustStrip">🏛️ Direct hand-off to official government portals · No middlemen fees</span>
             </div>
           </div>
 
@@ -253,34 +249,34 @@
            ========================================================================== -->
       <section class="how-it-works-section">
         <div class="section-header">
-          <span class="section-eyebrow">A Guided Experience</span>
-          <h2 class="section-title">How KrishiSetu Solves the Welfare Gap</h2>
-          <p class="section-desc">Government portals provide raw notifications; we provide complete, step-by-step application guidance from document readiness to sanction.</p>
+          <span class="section-eyebrow" data-i18n="howItWorksEyebrow">A Guided Experience</span>
+          <h2 class="section-title" data-i18n="howItWorksTitle">How KrishiSetu Solves the Welfare Gap</h2>
+          <p class="section-desc" data-i18n="howItWorksDesc">Government portals provide raw notifications; we provide complete, step-by-step application guidance from document readiness to sanction.</p>
         </div>
 
         <div class="steps-grid">
           <div class="step-card">
             <div class="step-number">1</div>
-            <h4>Centralized Discovery</h4>
-            <p>Browse 36+ verified central, state, and NGO welfare programs categorized by benefit type, subsidy %, and deadline.</p>
+            <h4 data-i18n="step1Title">Centralized Discovery</h4>
+            <p data-i18n="step1Desc">Browse 36+ verified central, state, and NGO welfare programs categorized by benefit type, subsidy %, and deadline.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">2</div>
-            <h4>Instant Eligibility</h4>
-            <p>Answer a short 4-step wizard to see which schemes you legally qualify for with transparent match criteria.</p>
+            <h4 data-i18n="step2Title">Instant Eligibility</h4>
+            <p data-i18n="step2Desc">Answer a short 4-step wizard to see which schemes you legally qualify for with transparent match criteria.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">3</div>
-            <h4>Step-by-Step Guidance</h4>
-            <p>Get printable document checklists, detailed procedure timelines, and local office contact points before applying.</p>
+            <h4 data-i18n="step3Title">Step-by-Step Guidance</h4>
+            <p data-i18n="step3Desc">Get printable document checklists, detailed procedure timelines, and local office contact points before applying.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">4</div>
-            <h4>Official Hand-Off &amp; Track</h4>
-            <p>Apply directly on the authentic government portal and monitor your self-reported milestone progress on your Dashboard.</p>
+            <h4 data-i18n="step4Title">Official Hand-Off &amp; Track</h4>
+            <p data-i18n="step4Desc">Apply directly on the authentic government portal and monitor your self-reported milestone progress on your Dashboard.</p>
           </div>
         </div>
       </section>
@@ -291,12 +287,12 @@
       <section class="catalog-section" style="padding: 48px 32px; background: var(--color-surface); border-top: 1px solid var(--color-surface-border);">
         <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
           <div>
-            <span class="section-eyebrow">Welfare Scheme Catalog</span>
-            <h2 class="section-title" style="margin-bottom: 6px;">Featured Agricultural Schemes</h2>
-            <p class="section-desc" style="margin: 0;">Explore verified Central, State, and CSR welfare initiatives for small and marginal farmers.</p>
+            <span class="section-eyebrow" data-i18n="featuredEyebrow">Welfare Scheme Catalog</span>
+            <h2 class="section-title" style="margin-bottom: 6px;" data-i18n="featuredTitle">Featured Agricultural Schemes</h2>
+            <p class="section-desc" style="margin: 0;" data-i18n="featuredDesc">Explore verified Central, State, and CSR welfare initiatives for small and marginal farmers.</p>
           </div>
           <a href="schemes.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
-            <span>Explore All 36+ Schemes</span>
+            <span data-i18n="exploreAllBtn">Explore All 36+ Schemes</span>
             <span>→</span>
           </a>
         </div>
@@ -307,9 +303,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 24px;">
-          <a href="schemes.html" class="btn-outline" style="padding: 12px 28px; font-size: 0.95rem;">
-            View All Categories &amp; Filter Options →
-          </a>
+          <a href="schemes.html" class="btn-outline" style="padding: 12px 28px; font-size: 0.95rem;" data-i18n="viewAllCategoriesBtn">View All Categories &amp; Filter Options →</a>
         </div>
       </section>
 
@@ -318,9 +312,9 @@
            ========================================================================== -->
       <section style="padding: 56px 32px; max-width: 1240px; margin: 0 auto;">
         <div class="section-header" style="text-align: center; margin-bottom: 40px;">
-          <span class="section-eyebrow">Platform Capabilities</span>
-          <h2 class="section-title">Everything a Farmer Needs to Secure Benefits</h2>
-          <p class="section-desc">From checking your legal qualification to side-by-side comparison, tracking milestone status, and finding district help centers.</p>
+          <span class="section-eyebrow" data-i18n="capabilitiesEyebrow">Platform Capabilities</span>
+          <h2 class="section-title" data-i18n="capabilitiesTitle">Everything a Farmer Needs to Secure Benefits</h2>
+          <p class="section-desc" data-i18n="capabilitiesDesc">From checking your legal qualification to side-by-side comparison, tracking milestone status, and finding district help centers.</p>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
@@ -331,16 +325,10 @@
               <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #EAF7EE; color: #1E6B38; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
                 ✅
               </div>
-              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;">
-                Eligibility Checker
-              </h3>
-              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;">
-                Answer 4 quick questions regarding your state, land holding, crops, and social category to find your 100% matching schemes.
-              </p>
+              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;" data-i18n="cap1Title">Eligibility Checker</h3>
+              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;" data-i18n="cap1Desc">Answer 4 quick questions regarding your state, land holding, crops, and social category to find your 100% matching schemes.</p>
             </div>
-            <a href="eligibility.html" class="btn-primary" style="text-align: center;">
-              Launch Assessment →
-            </a>
+            <a href="eligibility.html" class="btn-primary" style="text-align: center;" data-i18n="cap1Btn">Launch Assessment →</a>
           </div>
 
           <!-- Card 2: Compare Schemes -->
@@ -349,16 +337,10 @@
               <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-accent-light); color: #8C6100; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
                 ⚖️
               </div>
-              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;">
-                Scheme Comparison
-              </h3>
-              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;">
-                Compare up to 3 schemes side-by-side across subsidies, land limits, paperwork requirements, and timelines.
-              </p>
+              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;" data-i18n="cap2Title">Scheme Comparison</h3>
+              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;" data-i18n="cap2Desc">Compare up to 3 schemes side-by-side across subsidies, land limits, paperwork requirements, and timelines.</p>
             </div>
-            <a href="compare.html" class="btn-outline" style="text-align: center;">
-              Open Comparison Matrix →
-            </a>
+            <a href="compare.html" class="btn-outline" style="text-align: center;" data-i18n="cap2Btn">Open Comparison Matrix →</a>
           </div>
 
           <!-- Card 3: Dashboard & Progress Kanban -->
@@ -367,16 +349,10 @@
               <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #EEF2FF; color: #3730A3; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
                 📊
               </div>
-              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;">
-                Application Pipeline
-              </h3>
-              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;">
-                Track your bookmarked schemes across 4 Kanban milestones: Not Started, Docs Pending, Applied, and Sanctioned.
-              </p>
+              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;" data-i18n="cap3Title">Application Pipeline</h3>
+              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;" data-i18n="cap3Desc">Track your bookmarked schemes across 4 Kanban milestones: Not Started, Docs Pending, Applied, and Sanctioned.</p>
             </div>
-            <a href="dashboard.html" class="btn-outline" style="text-align: center;">
-              View My Dashboard →
-            </a>
+            <a href="dashboard.html" class="btn-outline" style="text-align: center;" data-i18n="cap3Btn">View My Dashboard →</a>
           </div>
 
           <!-- Card 4: KVK & CSC Locator -->
@@ -385,16 +361,10 @@
               <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #FFF7ED; color: #9A3412; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
                 📍
               </div>
-              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;">
-                KVK &amp; CSC Directory
-              </h3>
-              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;">
-                Find verified district Krishi Vigyan Kendras and Digital Seva CSC centers with instant Google Search and Maps directions.
-              </p>
+              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 8px;" data-i18n="cap4Title">KVK &amp; CSC Directory</h3>
+              <p style="font-size: 0.875rem; color: var(--color-ink-muted); line-height: 1.6; margin-bottom: 20px;" data-i18n="cap4Desc">Find verified district Krishi Vigyan Kendras and Digital Seva CSC centers with instant Google Search and Maps directions.</p>
             </div>
-            <a href="locator.html" class="btn-outline" style="text-align: center;">
-              Find Nearest Center →
-            </a>
+            <a href="locator.html" class="btn-outline" style="text-align: center;" data-i18n="cap4Btn">Find Nearest Center →</a>
           </div>
 
         </div>
@@ -407,14 +377,12 @@
         <div class="footer-container">
           <div class="footer-brand">
             <h2>KrishiSetu (कृषि सेतु)</h2>
-            <p>A centralized digital bridge helping Indian farmers navigate agricultural welfare schemes with clarity, step-by-step guidance, and grounded AI assistance.</p>
-            <p style="margin-top: 14px; font-size: 0.775rem; color: #8EAE9D;">
-              Academic PBL Engineering Project · Designed &amp; Developed for Indian Farmers.
-            </p>
+            <p data-i18n="footerBrandDesc">A centralized digital bridge helping Indian farmers navigate agricultural welfare schemes with clarity, step-by-step guidance, and grounded AI assistance.</p>
+            <p style="margin-top: 14px; font-size: 0.775rem; color: #8EAE9D;" data-i18n="footerProject">Academic PBL Engineering Project · Designed &amp; Developed for Indian Farmers.</p>
           </div>
 
           <div class="footer-col">
-            <h4>Key Portals</h4>
+            <h4 data-i18n="footerPortals">Key Portals</h4>
             <ul class="footer-links">
               <li><a href="https://pmkisan.gov.in" target="_blank" rel="noopener">PM-KISAN Portal</a></li>
               <li><a href="https://pmfby.gov.in" target="_blank" rel="noopener">PMFBY Crop Insurance</a></li>
@@ -424,7 +392,7 @@
           </div>
 
           <div class="footer-col">
-            <h4>Platform Pages</h4>
+            <h4 data-i18n="footerPages">Platform Pages</h4>
             <ul class="footer-links">
               <li><a href="schemes.html">Explore 36+ Schemes</a></li>
               <li><a href="eligibility.html">Eligibility Checker</a></li>
@@ -435,7 +403,7 @@
           </div>
 
           <div class="footer-col">
-            <h4>Official Sources</h4>
+            <h4 data-i18n="footerSources">Official Sources</h4>
             <ul class="footer-links">
               <li><a href="https://agriwelfare.gov.in" target="_blank" rel="noopener">Ministry of Agriculture</a></li>
               <li><a href="https://pib.gov.in" target="_blank" rel="noopener">Press Information Bureau</a></li>
@@ -447,10 +415,10 @@
 
         <div class="footer-bottom">
           <div>
-            © 2026 KrishiSetu Platform. All scheme data verified against official PIB and Ministry of Agriculture releases.
+            <span data-i18n="footerCopyright">© 2026 KrishiSetu Platform. All scheme data verified against official PIB and Ministry of Agriculture releases.</span>
           </div>
           <div>
-            Direct Hand-Off to Official Portals · Zero Middlemen · Accessible in English &amp; हिन्दी
+            <span data-i18n="footerTagline">Direct Hand-Off to Official Portals · Zero Middlemen · Accessible in English &amp; हिन्दी</span>
           </div>
         </div>
       </footer>
@@ -484,7 +452,7 @@
             Tagline description
           </p>
           <div class="subsidy-box" style="margin-bottom: 0;">
-            <div class="subsidy-label">Key Subsidy / Financial Benefit</div>
+            <div class="subsidy-label" data-i18n="modalSubsidyLabel">Key Subsidy / Financial Benefit</div>
             <div class="subsidy-value" style="font-size: 1.15rem;" id="modalSubsidyHighlight">₹6,000 / year</div>
           </div>
         </div>
@@ -492,14 +460,14 @@
         <!-- Benefits & Eligibility Grid -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
           <div>
-            <h4 class="detail-section-title">✨ Key Benefits</h4>
+            <h4 class="detail-section-title" data-i18n="modalBenefitsTitle">✨ Key Benefits</h4>
             <ul id="modalBenefitsList" style="list-style: none; padding: 0;"></ul>
           </div>
           <div>
-            <h4 class="detail-section-title">🎯 Who is Eligible?</h4>
+            <h4 class="detail-section-title" data-i18n="modalEligTitle">🎯 Who is Eligible?</h4>
             <ul id="modalEligibilityList" style="list-style: none; padding: 0;"></ul>
             <div style="margin-top: 8px; font-size: 0.8125rem; color: var(--color-secondary);">
-              <strong>Target Group:</strong> <span id="modalTargetBeneficiary"></span>
+              <strong data-i18n="modalTargetGroup">Target Group:</strong> <span id="modalTargetBeneficiary"></span>
             </div>
           </div>
         </div>
@@ -507,17 +475,15 @@
         <!-- Required Documents Checklist (Checkable & Printable) -->
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <h4 class="detail-section-title" style="margin-bottom: 0; border: none;">📋 Required Documents Checklist</h4>
-            <button class="btn-outline" id="modalPrintChecklistBtn" style="font-size: 0.775rem; padding: 5px 12px;">
-              🖨️ Print / Download Checklist
-            </button>
+            <h4 class="detail-section-title" style="margin-bottom: 0; border: none;" data-i18n="modalDocsTitle">📋 Required Documents Checklist</h4>
+            <button class="btn-outline" id="modalPrintChecklistBtn" style="font-size: 0.775rem; padding: 5px 12px;" data-i18n="modalPrintBtn">🖨️ Print / Download Checklist</button>
           </div>
           <div class="documents-checklist" id="modalDocumentsList"></div>
         </div>
 
         <!-- Step-by-Step Procedure Timeline (Platform's Primary Differentiator!) -->
         <div>
-          <h4 class="detail-section-title">🚀 Step-by-Step Application Procedure (How to Apply)</h4>
+          <h4 class="detail-section-title" data-i18n="modalProcedureTitle">🚀 Step-by-Step Application Procedure (How to Apply)</h4>
           <div class="procedure-timeline" id="modalProcedureTimeline"></div>
         </div>
 
@@ -533,23 +499,16 @@
             <span style="font-size: 0.775rem; color: var(--color-ink-faint);" id="modalLastVerified">
               Verified: September 2026
             </span>
-            <button class="tts-btn" id="modalTtsBtn">
-              🔊 <span>Read Scheme Aloud</span>
-            </button>
-            <button class="btn-outline" id="modalSaveBtn" style="font-size: 0.8125rem; padding: 7px 14px;">
-              🤍 Save Scheme
-            </button>
+            <button class="tts-btn" id="modalTtsBtn">🔊 <span data-i18n="readAloud">Read Scheme Aloud</span></button>
+            <button class="btn-outline" id="modalSaveBtn" style="font-size: 0.8125rem; padding: 7px 14px;" data-i18n="modalSaveBtn">🤍 Save Scheme</button>
           </div>
 
           <div id="modalApplyBtnContainer" style="margin-bottom: 12px;"></div>
 
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <button class="btn-outline" id="modalAskAiBtn" style="font-size: 0.8125rem; padding: 8px 14px;">
-              🤖 Ask AI Assistant
-            </button>
-            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary" id="modalOfficialLink">
-              Apply on Official Portal ↗
-            </a>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-outline" id="modalProofDocLink" style="font-size: 0.8125rem; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; border-color: var(--color-primary); color: var(--color-primary); font-weight: 600;">📄 <span data-i18n="modalProofDocBtn">Proof Guidelines ↗</span></a>
+            <button class="btn-outline" id="modalAskAiBtn" style="font-size: 0.8125rem; padding: 8px 14px;" data-i18n="modalAskAiBtn">🤖 Ask AI Assistant</button>
+            <a href="https://agriwelfare.gov.in" target="_blank" rel="noopener noreferrer" class="btn-primary" id="modalOfficialLink" data-i18n="applyOfficial">Apply on Official Portal ↗</a>
           </div>
         </div>
 
@@ -562,11 +521,11 @@
        ========================================================================== -->
   <div class="compare-sticky-bar" id="compareStickyBar">
     <div style="font-size: 0.875rem; font-weight: 600;">
-      Compare Schemes (<span id="compareCountLabel">Selected</span>):
+      <span data-i18n="compareBarLabel">Compare Schemes</span> (<span id="compareCountLabel">Selected</span>):
     </div>
     <div class="compare-bar-schemes" id="comparePillsContainer"></div>
     <a href="compare.html" class="btn-primary btn-accent" style="padding: 7px 16px; font-size: 0.8125rem;">
-      Compare Side-by-Side →
+      <span data-i18n="compareBarBtn">Compare Side-by-Side →</span>
     </a>
   </div>
 
@@ -588,7 +547,7 @@
           <div class="ai-avatar">KM</div>
           <div class="ai-header-text">
             <h4>Krishi Mitra AI</h4>
-            <span>● 100% Grounded in Scheme DB</span>
+            <span data-i18n="aiGroundedBadge">● 100% Grounded in Scheme DB</span>
           </div>
         </div>
         <button class="ai-header-close" id="aiCloseBtn" title="Minimize Chat">✕</button>
@@ -602,16 +561,16 @@
       <!-- Quick Suggestion Chips -->
       <div style="padding: 8px 14px; background: #FAF8F2; border-top: 1px solid var(--color-surface-border);">
         <div class="ai-quick-chips">
-          <button class="ai-chip" data-query="PM-KISAN eligibility and documents">PM-KISAN Documents?</button>
-          <button class="ai-chip" data-query="KCC loan interest rate">KCC 4% Interest?</button>
-          <button class="ai-chip" data-query="Solar pump subsidy in PM-KUSUM">Solar Pump Subsidy?</button>
-          <button class="ai-chip" data-query="Check my saved schemes progress">My Saved Schemes</button>
+          <button class="ai-chip" data-query="PM-KISAN eligibility and documents" data-i18n="aiChipPmkisan">PM-KISAN Documents?</button>
+          <button class="ai-chip" data-query="KCC loan interest rate" data-i18n="aiChipKcc">KCC 4% Interest?</button>
+          <button class="ai-chip" data-query="Solar pump subsidy in PM-KUSUM" data-i18n="aiChipSolar">Solar Pump Subsidy?</button>
+          <button class="ai-chip" data-query="Check my saved schemes progress" data-i18n="aiChipSaved">My Saved Schemes</button>
         </div>
       </div>
 
       <!-- Input Bar -->
       <div class="ai-input-bar">
-        <input type="text" class="ai-input" id="aiInputField" placeholder="Ask about any scheme, documents, steps..." autocomplete="off">
+        <input type="text" class="ai-input" id="aiInputField" placeholder="Ask about any scheme, documents, steps..." autocomplete="off" data-i18n-placeholder="aiPlaceholder">
         <button class="ai-send-btn" id="aiSendBtn" title="Send message">➤</button>
       </div>
     </div>
